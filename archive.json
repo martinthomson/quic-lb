@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-06T15:18:42.036491+00:00",
+  "timestamp": "2022-07-06T23:51:32.442038+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -3133,9 +3133,24 @@
       "labels": [],
       "body": "The '11' codepoint might be better defined. It would be good, for instance, if a stateful load balancer actually stored the observed CID so that the connection can survive a NAT rebinding.",
       "createdAt": "2022-04-25T22:45:20Z",
-      "updatedAt": "2022-04-25T22:45:20Z",
+      "updatedAt": "2022-07-06T23:09:02Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Actually this is a bit harder than we'd like.\r\n\r\nIf the load balancer is stateless, then the short-header processing would have to be based on the destination connection ID to be robust to NAT rebinding. But then, as the connection ID will change mid-handshake, long-header processing needs a different approach. I don't see how, logically, a stateless LB can maintain consistency between these two results unless we force the unconfigured server to retain most of the client-generated CID.",
+          "createdAt": "2022-07-06T22:09:36Z",
+          "updatedAt": "2022-07-06T22:09:36Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Having reflected on this a bit more, this is what I think we should do:\r\nKeep 0b11 as 4-tuple routing. However Load Balancers MAY observe destination connection IDs and keep state on them, to later survive a NAT rebinding.\r\n\r\nI see two use cases for 0b11: \r\n(1) a general purpose server that always uses QUIC-LB, whether or not it's behind an LB, for simplicity. So when it's not behind a Layer 4 LB it just generates random CIDs except for the first byte. As an added bonus, if there *is* an unknown L4 LB in front of it the behavior will not be pathological, at least until there's a migration. But in general, the rebinding performance is not all that important.\r\n(2) As a panic mode when things are misconfigured or the server has run out of nonces. Again, I'm not sure rebinding performance is super-critical.\r\n\r\nIn other words, if a server is behind an L4 load balancer is and is using 0b11, something has gone very wrong.",
+          "createdAt": "2022-07-06T23:09:02Z",
+          "updatedAt": "2022-07-06T23:09:02Z"
+        }
+      ]
     }
   ],
   "pulls": [
