@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-05-25T19:22:13.305706+00:00",
+  "timestamp": "2022-07-06T15:18:39.567210+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -2532,15 +2532,15 @@
       "id": "I_kwDODoD6yc48iK6b",
       "title": "Get rid of Block Cipher CIDs",
       "url": "https://github.com/quicwg/load-balancers/issues/138",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "There has quietly been some work on tightening up the QUIC-LB specification. At the moment, we are still short on implementations but I am hearing something might happen soon.\r\n\r\nAnyway, Christian Huitema has made substantial contributions to the security properties of Stream Cipher CID, which allows smallish CIDs, by making it a three-pass algorithm. We still have the \"Block Cipher CID option\" which requires CIDs of at least 17 bytes; AFAICT the only advantage at this point is that it can be decoded with 1 block encryption operation instead of three.\r\n\r\nIn principle, QUIC-LB load balancers can be run with no per-connection state, in which case this would be a per-packet operation. I strongly suspect that real LBs will keep some per-4tuple state, as they do today; if so, this crypto operation only needs to occur once per packet where the 4-tuple is new. If so, the CPU impact is vanishingly small except in a storm of garbage packets.\r\n\r\nSo AFAICT, the use case for Block Cipher is as follows:\r\n- Willing to run one crypto operation per packet/new 4-tuple\r\n- Not OK with doing three crypto operations\r\n- satisfied with 17B + CIDs\r\n\r\nI strongly suspect this does not describe a real implementer, and am inclined to simply delete this in my effort to simplify the design. Nevertheless, I'm taking this to the list in case someone thinks this is an important use case.",
       "createdAt": "2021-10-04T20:15:07Z",
-      "updatedAt": "2022-02-08T15:34:07Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-06T15:04:04Z",
+      "closedAt": "2022-07-06T15:04:04Z",
       "comments": [
         {
           "author": "huitema",
@@ -2632,6 +2632,13 @@
           "body": "#155 reduced the Block CID (now \"single-pass encryption\") to the special case where nonce_len + sid_len == 16.",
           "createdAt": "2022-02-08T15:34:07Z",
           "updatedAt": "2022-02-08T15:34:07Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Given the work in #155, I'm disinclined to remove this special case. Closing.",
+          "createdAt": "2022-07-06T15:04:04Z",
+          "updatedAt": "2022-07-06T15:04:04Z"
         }
       ]
     },
@@ -8972,7 +8979,7 @@
       "id": "PR_kwDODoD6yc42HxoK",
       "title": "Handle Second Initial correctly",
       "url": "https://github.com/quicwg/load-balancers/pull/170",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -8981,18 +8988,26 @@
       "labels": [],
       "body": "Fix #165",
       "createdAt": "2022-04-12T18:06:40Z",
-      "updatedAt": "2022-05-23T21:15:23Z",
+      "updatedAt": "2022-07-06T15:16:40Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "main",
       "baseRefOid": "cf4c59ea1d54b6023a36458192ff0ce058cdbfc6",
       "headRepository": "quicwg/load-balancers",
       "headRefName": "late-retyr",
       "headRefOid": "f18171bd1d14aa9a30f5d808fc3480672847eae9",
-      "closedAt": null,
+      "closedAt": "2022-07-06T15:16:40Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Replaced by #172",
+          "createdAt": "2022-07-06T15:16:40Z",
+          "updatedAt": "2022-07-06T15:16:40Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDODoD6yc45xcGD",
@@ -9095,26 +9110,42 @@
       "id": "PR_kwDODoD6yc44ag9j",
       "title": "s/invalid/not valid",
       "url": "https://github.com/quicwg/load-balancers/pull/173",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "LPardue",
       "authorAssociation": "MEMBER",
       "assignees": [],
       "labels": [],
       "body": "the in-solidarity bot should have flagged this and it is an easy fix",
       "createdAt": "2022-05-25T05:40:13Z",
-      "updatedAt": "2022-05-25T05:40:13Z",
+      "updatedAt": "2022-05-25T19:22:31Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "main",
       "baseRefOid": "5635d1aacebb3c3bc5441e80e8a3202a640baa95",
       "headRepository": "quicwg/load-balancers",
       "headRefName": "LPardue-patch-1",
       "headRefOid": "34b625f80a09cc85022fd1c77b3ccc298a70bff8",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2022-05-25T19:22:30Z",
+      "mergedAt": "2022-05-25T19:22:30Z",
+      "mergedBy": "nibanks",
+      "mergeCommit": {
+        "oid": "7676a95b288d3369818c344d76674f39f054e743"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODoD6yc46u15J",
+          "commit": {
+            "abbreviatedOid": "34b625f"
+          },
+          "author": "nibanks",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-05-25T19:22:26Z",
+          "updatedAt": "2022-05-25T19:22:26Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
