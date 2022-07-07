@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-06T23:51:32.442038+00:00",
+  "timestamp": "2022-07-07T17:01:14.106490+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -2983,7 +2983,7 @@
       "labels": [],
       "body": "The second crypto review has a lot of suggestions. Thanks to Ga\u00ebtan Leurent and Leo Perrin:\r\n\r\nWe (Ga\u00ebtan and L\u00e9o) have investigated the encryption algorithm used in QUIC to encrypt the connection ID's, namely the AES-based format-preserving encryption scheme in section 5.3.2.\r\n\r\nAs far as we understand, the use of a keyed permutation to encrypt the connection ID makes sense, but there are some issues with the design of the keyed permutation.\r\n\r\n\r\nA connection ID is the concatenation of a nonce and a server_id, each consisting of an integer number of bytes. The concatenation is split into two words of identical length (the length being a multiple of 4 bits but not necessarily of 8). These two halves, say X_L and X_R, are then encrypted using a 4-round Feistel network by repeating the following round function 4 times:\r\n\r\nX_L, X_R = X_R ^ F^K_i(X_L), X_L\r\n\r\nwhere F^K_i is obtained by:\r\n1. expanding its input to be a 128-bit block where the last bits encode the value of i,\r\n2. applying AES_K on the block obtained, and\r\n3. truncating the result to be the same length as X_R and X_L.\r\n\r\nThe latest draft (draft-ietf-quic-load-balancers-12) has two different function for even and odd round (expand_left/expand_right and truncate_left/truncate_right), but this seems unnecessary from a security perspective: the round index i is sufficient to make the functions independent.\r\n\r\nThis scheme can be seen as a simplified variant of FFX [2]. While the overall structure is similar, the QUIC short encryption algorithm has much fewer rounds (4 vs. at least 12), no tweak, and its round function is not explicitly dependent on the length of the input. This could lead to some problems outlined below.\r\n\r\nSuppose that an identical key K is used to encrypt two (server_id,nonce) pairs such that the first one is X_L || X_R and the second is the longer X_L || 0 || X_R || 0, where each 0 is the bit sequence 0000. The second sequence is one byte longer than the first and could correspond e.g. to an identical server_id but a different nonce. In this case, the encryption of the first pair will yield Y_L || Y_R. The encryption of the second pair will be equal to Y_L || 0 || Y_R || 0 provided that each AES encryption has a 0 nibble in the correct position in its output, an event that has probability (2^-4)^4 = 2^-16. Indeed, in both case, the inputs of F^K_i will be identical (see the process outlined above), and thus so will their outputs.\r\n\r\nThis problem is easily mitigated using either of the following approaches.\r\n1. As specified in FFX, have the round function be dependent on the length of X_L. For instance, instead of having an input of the shape X_L || 0^a || i, use X_L || 0^b || length(X_L) || i, where length(X_L) is bit-length of X_L.\r\n2. Use a simple domain separation between the two inputs of F^K_i, namely X_L and i. This can be done using a bit set to 1 in much the same way as what is done in the padding used for SHA-3, so that the input of F^K_i would be X_L || 1 || 0^c || i.\r\n\r\nNote also that a 4-round Feistel network with non-bijective round functions (as is used here) does not offer a very high security level against distinguishing attacks, as explained in [3]. This distinguisher relies on the fact that a 4-round Feistel network maps a difference of (0, d) to (0,d) with a probability higher than expected, which can be detected using about 2^{n/2} inputs with a given difference (where n is the bitlength of a branch, i.e. half of the block size). If the nonces are simply incremented counters, then the difference between two successive plaintexts is equal to (0,1) with probability 1/2, meaning that an attacker should be able to distinguish a set of 2^{n/2+1} connection identifiers corresponding to the same connection.\r\n\r\nThe countermeasure here is simple, and would be inline with using a cipher that is closer to the original FFX: simply use more than 4 rounds.  We suggest using the parameters A2 from the FFX specification, which would result in 12 rounds here (with inputs of at least 32 bits).\r\n\r\nWe also noticed that the definition of expand_left and expand_right are ambiguous: as written, they seem to take an integer as input and to strip the leading zeroes; they should rather take a bit vector of known length as input.\r\n",
       "createdAt": "2022-03-27T21:38:49Z",
-      "updatedAt": "2022-04-05T20:54:54Z",
+      "updatedAt": "2022-07-07T01:11:12Z",
       "closedAt": "2022-04-05T20:54:54Z",
       "comments": [
         {
@@ -2992,6 +2992,20 @@
           "body": "#166, #168, and #169 have been filed as specific issues here. Closing with no further action.",
           "createdAt": "2022-04-05T20:54:54Z",
           "updatedAt": "2022-04-05T20:54:54Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "A distinguishing attack is a way to say \"this string of bytes that looks random is not random, but is in fact the encryption of some unknown clear text data.\" My first suggestion is to acknowledge that in the security section: \"using only 4 passes does not protected against a distinguishing attack, in which attackers observing a sufficient number of CID can determine that they were encrypted using this scheme, instead of being drawn purely at random. Deployments that are concerned with this attack should use 12 passes.\"\r\n\r\nIn other words, I do not believe that this is a serious concern. Our main concern is, can attackers find out which server ID is encrypted inside the CID. The distinguishing attack does not do that. In fact, doing that would require breaking AES. But sure, we can specify a 12 passes algorithm. And, for the sake of simplicity, I would only specify 4 and 12.",
+          "createdAt": "2022-07-07T01:08:07Z",
+          "updatedAt": "2022-07-07T01:08:07Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Also note that analyzing the first unencrypted first byte of the CID is also a way to determine that our scheme is used, regardless of the number of passes. The distinguishing attack is not all that interesting...",
+          "createdAt": "2022-07-07T01:11:12Z",
+          "updatedAt": "2022-07-07T01:11:12Z"
         }
       ]
     },
@@ -9161,6 +9175,58 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 174,
+      "id": "PR_kwDODoD6yc46-qGs",
+      "title": "Further 0b11 discussion",
+      "url": "https://github.com/quicwg/load-balancers/pull/174",
+      "state": "OPEN",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #171.",
+      "createdAt": "2022-07-06T23:59:06Z",
+      "updatedAt": "2022-07-07T17:00:50Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "main",
+      "baseRefOid": "6c3767308940722dd8e0a2da06dce30810d0a91d",
+      "headRepository": "quicwg/load-balancers",
+      "headRefName": "cp11",
+      "headRefOid": "4e476580634c28435bddd33d44b4bf7814a38e38",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 175,
+      "id": "PR_kwDODoD6yc46_guy",
+      "title": "Adding the description of twelve pass encryption",
+      "url": "https://github.com/quicwg/load-balancers/pull/175",
+      "state": "OPEN",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Not really sure that we have to do that, but I did it anyhow. \r\nAlso fixed a couple of random line length issues that were causing errors in xml2rfc",
+      "createdAt": "2022-07-07T06:01:41Z",
+      "updatedAt": "2022-07-07T06:01:41Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "main",
+      "baseRefOid": "6c3767308940722dd8e0a2da06dce30810d0a91d",
+      "headRepository": "getdnsapi/load-balancers",
+      "headRefName": "12passes",
+      "headRefOid": "3a3dd80ae74da8e090381aee5d5827e7f08caf3a",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
