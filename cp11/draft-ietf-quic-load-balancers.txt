@@ -5,10 +5,10 @@
 QUIC                                                             M. Duke
 Internet-Draft                                                    Google
 Intended status: Standards Track                                N. Banks
-Expires: 7 January 2023                                        Microsoft
+Expires: 8 January 2023                                        Microsoft
                                                               C. Huitema
                                                     Private Octopus Inc.
-                                                             6 July 2022
+                                                             7 July 2022
 
 
             QUIC-LB: Generating Routable QUIC Connection IDs
@@ -53,7 +53,7 @@ Status of This Memo
 
 
 
-Duke, et al.             Expires 7 January 2023                 [Page 1]
+Duke, et al.             Expires 8 January 2023                 [Page 1]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -63,7 +63,7 @@ Internet-Draft                   QUIC-LB                       July 2022
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 January 2023.
+   This Internet-Draft will expire on 8 January 2023.
 
 Copyright Notice
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Duke, et al.             Expires 7 January 2023                 [Page 2]
+Duke, et al.             Expires 8 January 2023                 [Page 2]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -165,7 +165,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                 [Page 3]
+Duke, et al.             Expires 8 January 2023                 [Page 3]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -221,7 +221,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                 [Page 4]
+Duke, et al.             Expires 8 January 2023                 [Page 4]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -277,7 +277,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                 [Page 5]
+Duke, et al.             Expires 8 January 2023                 [Page 5]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -333,7 +333,7 @@ Example Structure {
 
 
 
-Duke, et al.             Expires 7 January 2023                 [Page 6]
+Duke, et al.             Expires 8 January 2023                 [Page 6]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -366,12 +366,13 @@ Internet-Draft                   QUIC-LB                       July 2022
    probability of connection failure due to a change in the number of
    servers.
 
-   When using codepoint 0b11, all octets but the first MUST appear to be
-   random.  The connection ID SHOULD be of at least length 8 to provide
-   7 bytes of entropy after the first octet with a low chance of
-   collision.  Furthermore, servers in a pool SHOULD also use a
-   consistent connection ID length to simplify the load balancer's
-   extraction of a connection ID from short headers.
+   When using codepoint 0b11, all bytes but the first SHOULD have no
+   larger of a chance of collision as random bytes.  The connection ID
+   SHOULD be of at least length 8 to provide 7 bytes of entropy after
+   the first octet with a low chance of collision.  Furthermore, servers
+   in a pool SHOULD also use a consistent connection ID length to
+   simplify the load balancer's extraction of a connection ID from short
+   headers.
 
 2.3.  Length Self-Description
 
@@ -381,18 +382,23 @@ Internet-Draft                   QUIC-LB                       July 2022
    servers, it is impractical to efficiently lookup these keys if the
    connection ID does not self-encode its own length.
 
+
+
+
+
+
+
+
+Duke, et al.             Expires 8 January 2023                 [Page 7]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    Note that this is a function of particular server devices and is
    irrelevant to load balancers.  As such, load balancers MAY omit this
    from their configuration.  However, the remaining 6 bits in the first
    octet of the Connection ID are reserved to express the length of the
    following connection ID, not including the first octet.
-
-
-
-Duke, et al.             Expires 7 January 2023                 [Page 7]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
    A server not using this functionality SHOULD make the six bits appear
    to be random.
@@ -435,20 +441,19 @@ Internet-Draft                   QUIC-LB                       July 2022
    server ID.  Load balancers decode the server ID from the CID in
    incoming packets to route to the correct server.
 
+
+
+
+
+Duke, et al.             Expires 8 January 2023                 [Page 8]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    There are situations where a server pool might be operating two or
    more routing algorithms or parameter sets simultaneously.  The load
    balancer uses the first two bits of the connection ID to multiplex
    incoming DCIDs over these schemes (see Section 2.1).
-
-
-
-
-
-
-Duke, et al.             Expires 7 January 2023                 [Page 8]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
 3.1.  Unroutable Connection IDs
 
@@ -487,6 +492,20 @@ Internet-Draft                   QUIC-LB                       July 2022
    When forwarding a packet with a long header and unroutable DCID, load
    balancers MUST use a fallback algorithm as specified in Section 3.2.
 
+
+
+
+
+
+
+
+
+
+Duke, et al.             Expires 8 January 2023                 [Page 9]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    Load balancers MAY drop packets with long headers and unroutable
    DCIDs if and only if it knows that the encoded QUIC version does not
    allow an unroutable DCID in a packet with that signature.  For
@@ -495,16 +514,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    to a QUIC-LB routable server will always have a server-generated
    routable CID.  The prohibition against dropping packets with long
    headers remains for unknown QUIC versions.
-
-
-
-
-
-
-Duke, et al.             Expires 7 January 2023                 [Page 9]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
    Furthermore, while the load balancer function MUST NOT drop packets,
    the device might implement other security policies, outside the scope
@@ -546,21 +555,17 @@ Internet-Draft                   QUIC-LB                       July 2022
    The configuration agent chooses a server ID length for each
    configuration that MUST be at least one octet.
 
+
+
+Duke, et al.             Expires 8 January 2023                [Page 10]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    A QUIC-LB configuration MAY significantly over-provision the server
    ID space (i.e., provide far more codepoints than there are servers)
    to increase the probability that a randomly generated Destination
    Connection ID is unroutable.
-
-
-
-
-
-
-
-Duke, et al.             Expires 7 January 2023                [Page 10]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
    The configuration agent SHOULD provide a means for servers to express
    the number of server IDs it can usefully employ, because a single
@@ -606,17 +611,15 @@ Internet-Draft                   QUIC-LB                       July 2022
    The nonce length MUST be at least 4 octets.  The server ID length
    MUST be at least 1 octet.
 
-   As QUIC version 1 limits connection IDs to 20 octets, the server ID
-   and nonce lengths MUST sum to 19 octets or less.
 
 
-
-
-
-Duke, et al.             Expires 7 January 2023                [Page 11]
+Duke, et al.             Expires 8 January 2023                [Page 11]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+   As QUIC version 1 limits connection IDs to 20 octets, the server ID
+   and nonce lengths MUST sum to 19 octets or less.
 
 4.3.  Server Actions
 
@@ -666,10 +669,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-
-
-
-Duke, et al.             Expires 7 January 2023                [Page 12]
+Duke, et al.             Expires 8 January 2023                [Page 12]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -725,7 +725,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 13]
+Duke, et al.             Expires 8 January 2023                [Page 13]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -781,7 +781,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 14]
+Duke, et al.             Expires 8 January 2023                [Page 14]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -837,7 +837,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 15]
+Duke, et al.             Expires 8 January 2023                [Page 15]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -893,7 +893,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 16]
+Duke, et al.             Expires 8 January 2023                [Page 16]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -949,7 +949,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 17]
+Duke, et al.             Expires 8 January 2023                [Page 17]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1005,7 +1005,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 18]
+Duke, et al.             Expires 8 January 2023                [Page 18]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1061,7 +1061,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 19]
+Duke, et al.             Expires 8 January 2023                [Page 19]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1117,7 +1117,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 20]
+Duke, et al.             Expires 8 January 2023                [Page 20]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1173,7 +1173,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 21]
+Duke, et al.             Expires 8 January 2023                [Page 21]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1229,7 +1229,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 22]
+Duke, et al.             Expires 8 January 2023                [Page 22]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1285,7 +1285,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 23]
+Duke, et al.             Expires 8 January 2023                [Page 23]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1341,7 +1341,7 @@ Appendix A.  QUIC-LB YANG Model
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 24]
+Duke, et al.             Expires 8 January 2023                [Page 24]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1397,7 +1397,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 25]
+Duke, et al.             Expires 8 January 2023                [Page 25]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1453,7 +1453,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 26]
+Duke, et al.             Expires 8 January 2023                [Page 26]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1509,7 +1509,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 27]
+Duke, et al.             Expires 8 January 2023                [Page 27]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1565,7 +1565,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 28]
+Duke, et al.             Expires 8 January 2023                [Page 28]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1621,7 +1621,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 29]
+Duke, et al.             Expires 8 January 2023                [Page 29]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1677,7 +1677,7 @@ Appendix B.  Load Balancer Test Vectors
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 30]
+Duke, et al.             Expires 8 January 2023                [Page 30]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1733,7 +1733,7 @@ C.1.  DTLS 1.0 and 1.2
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 31]
+Duke, et al.             Expires 8 January 2023                [Page 31]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1789,7 +1789,7 @@ C.2.  DTLS 1.3
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 32]
+Duke, et al.             Expires 8 January 2023                [Page 32]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1845,7 +1845,7 @@ E.4.  since draft-ietf-quic-load-balancers-10
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 33]
+Duke, et al.             Expires 8 January 2023                [Page 33]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1901,7 +1901,7 @@ E.8.  since draft-ietf-quic-load-balancers-06
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 34]
+Duke, et al.             Expires 8 January 2023                [Page 34]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1957,7 +1957,7 @@ E.12.  since-draft-ietf-quic-load-balancers-02
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 35]
+Duke, et al.             Expires 8 January 2023                [Page 35]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -2013,7 +2013,7 @@ E.19.  Since draft-duke-quic-load-balancers-02
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 36]
+Duke, et al.             Expires 8 January 2023                [Page 36]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -2069,4 +2069,4 @@ Authors' Addresses
 
 
 
-Duke, et al.             Expires 7 January 2023                [Page 37]
+Duke, et al.             Expires 8 January 2023                [Page 37]
