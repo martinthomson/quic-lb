@@ -5,10 +5,10 @@
 QUIC                                                             M. Duke
 Internet-Draft                                                    Google
 Intended status: Standards Track                                N. Banks
-Expires: 8 January 2023                                        Microsoft
+Expires: 9 January 2023                                        Microsoft
                                                               C. Huitema
                                                     Private Octopus Inc.
-                                                             7 July 2022
+                                                             8 July 2022
 
 
             QUIC-LB: Generating Routable QUIC Connection IDs
@@ -53,7 +53,7 @@ Status of This Memo
 
 
 
-Duke, et al.             Expires 8 January 2023                 [Page 1]
+Duke, et al.             Expires 9 January 2023                 [Page 1]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -63,7 +63,7 @@ Internet-Draft                   QUIC-LB                       July 2022
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2023.
+   This Internet-Draft will expire on 9 January 2023.
 
 Copyright Notice
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Duke, et al.             Expires 8 January 2023                 [Page 2]
+Duke, et al.             Expires 9 January 2023                 [Page 2]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -122,50 +122,50 @@ Internet-Draft                   QUIC-LB                       July 2022
      8.4.  Limited configuration scope . . . . . . . . . . . . . . .  20
      8.5.  Stateless Reset Oracle  . . . . . . . . . . . . . . . . .  21
      8.6.  Connection ID Entropy . . . . . . . . . . . . . . . . . .  22
-   9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  22
+     8.7.  Distinguishing Attacks  . . . . . . . . . . . . . . . . .  23
+   9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  23
    10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  23
      10.1.  Normative References . . . . . . . . . . . . . . . . . .  23
      10.2.  Informative References . . . . . . . . . . . . . . . . .  23
-   Appendix A.  QUIC-LB YANG Model . . . . . . . . . . . . . . . . .  24
-     A.1.  Tree Diagram  . . . . . . . . . . . . . . . . . . . . . .  30
-   Appendix B.  Load Balancer Test Vectors . . . . . . . . . . . . .  30
+   Appendix A.  QUIC-LB YANG Model . . . . . . . . . . . . . . . . .  25
+     A.1.  Tree Diagram  . . . . . . . . . . . . . . . . . . . . . .  31
+   Appendix B.  Load Balancer Test Vectors . . . . . . . . . . . . .  31
      B.1.  Unencrypted CIDs  . . . . . . . . . . . . . . . . . . . .  31
-     B.2.  Encrypted CIDs  . . . . . . . . . . . . . . . . . . . . .  31
-   Appendix C.  Interoperability with DTLS over UDP  . . . . . . . .  31
-     C.1.  DTLS 1.0 and 1.2  . . . . . . . . . . . . . . . . . . . .  31
-     C.2.  DTLS 1.3  . . . . . . . . . . . . . . . . . . . . . . . .  32
-     C.3.  Future Versions of DTLS . . . . . . . . . . . . . . . . .  33
-   Appendix D.  Acknowledgments  . . . . . . . . . . . . . . . . . .  33
-   Appendix E.  Change Log . . . . . . . . . . . . . . . . . . . . .  33
-     E.1.  since draft-ietf-quic-load-balancers-13 . . . . . . . . .  33
-     E.2.  since draft-ietf-quic-load-balancers-12 . . . . . . . . .  33
-     E.3.  since draft-ietf-quic-load-balancers-11 . . . . . . . . .  33
-     E.4.  since draft-ietf-quic-load-balancers-10 . . . . . . . . .  33
-     E.5.  since draft-ietf-quic-load-balancers-09 . . . . . . . . .  34
-     E.6.  since draft-ietf-quic-load-balancers-08 . . . . . . . . .  34
-     E.7.  since draft-ietf-quic-load-balancers-07 . . . . . . . . .  34
-     E.8.  since draft-ietf-quic-load-balancers-06 . . . . . . . . .  34
-     E.9.  since draft-ietf-quic-load-balancers-05 . . . . . . . . .  35
-     E.10. since draft-ietf-quic-load-balancers-04 . . . . . . . . .  35
-     E.11. since-draft-ietf-quic-load-balancers-03 . . . . . . . . .  35
-     E.12. since-draft-ietf-quic-load-balancers-02 . . . . . . . . .  35
-     E.13. since-draft-ietf-quic-load-balancers-01 . . . . . . . . .  36
-     E.14. since-draft-ietf-quic-load-balancers-00 . . . . . . . . .  36
-     E.15. Since draft-duke-quic-load-balancers-06 . . . . . . . . .  36
-     E.16. Since draft-duke-quic-load-balancers-05 . . . . . . . . .  36
-     E.17. Since draft-duke-quic-load-balancers-04 . . . . . . . . .  36
-     E.18. Since draft-duke-quic-load-balancers-03 . . . . . . . . .  36
-     E.19. Since draft-duke-quic-load-balancers-02 . . . . . . . . .  36
-     E.20. Since draft-duke-quic-load-balancers-01 . . . . . . . . .  37
-     E.21. Since draft-duke-quic-load-balancers-00 . . . . . . . . .  37
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  37
+     B.2.  Encrypted CIDs  . . . . . . . . . . . . . . . . . . . . .  32
+   Appendix C.  Interoperability with DTLS over UDP  . . . . . . . .  32
+     C.1.  DTLS 1.0 and 1.2  . . . . . . . . . . . . . . . . . . . .  32
+     C.2.  DTLS 1.3  . . . . . . . . . . . . . . . . . . . . . . . .  33
+     C.3.  Future Versions of DTLS . . . . . . . . . . . . . . . . .  34
+   Appendix D.  Acknowledgments  . . . . . . . . . . . . . . . . . .  34
+   Appendix E.  Change Log . . . . . . . . . . . . . . . . . . . . .  34
+     E.1.  since draft-ietf-quic-load-balancers-13 . . . . . . . . .  34
+     E.2.  since draft-ietf-quic-load-balancers-12 . . . . . . . . .  34
+     E.3.  since draft-ietf-quic-load-balancers-11 . . . . . . . . .  34
+     E.4.  since draft-ietf-quic-load-balancers-10 . . . . . . . . .  34
+     E.5.  since draft-ietf-quic-load-balancers-09 . . . . . . . . .  35
+     E.6.  since draft-ietf-quic-load-balancers-08 . . . . . . . . .  35
+     E.7.  since draft-ietf-quic-load-balancers-07 . . . . . . . . .  35
+     E.8.  since draft-ietf-quic-load-balancers-06 . . . . . . . . .  35
+     E.9.  since draft-ietf-quic-load-balancers-05 . . . . . . . . .  36
+     E.10. since draft-ietf-quic-load-balancers-04 . . . . . . . . .  36
+     E.11. since-draft-ietf-quic-load-balancers-03 . . . . . . . . .  36
+     E.12. since-draft-ietf-quic-load-balancers-02 . . . . . . . . .  36
+     E.13. since-draft-ietf-quic-load-balancers-01 . . . . . . . . .  37
+     E.14. since-draft-ietf-quic-load-balancers-00 . . . . . . . . .  37
+     E.15. Since draft-duke-quic-load-balancers-06 . . . . . . . . .  37
+     E.16. Since draft-duke-quic-load-balancers-05 . . . . . . . . .  37
+     E.17. Since draft-duke-quic-load-balancers-04 . . . . . . . . .  37
+     E.18. Since draft-duke-quic-load-balancers-03 . . . . . . . . .  37
+     E.19. Since draft-duke-quic-load-balancers-02 . . . . . . . . .  37
+     E.20. Since draft-duke-quic-load-balancers-01 . . . . . . . . .  38
+     E.21. Since draft-duke-quic-load-balancers-00 . . . . . . . . .  38
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  38
 
 
 
 
 
-
-Duke, et al.             Expires 8 January 2023                 [Page 3]
+Duke, et al.             Expires 9 January 2023                 [Page 3]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -221,7 +221,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                 [Page 4]
+Duke, et al.             Expires 9 January 2023                 [Page 4]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -277,25 +277,26 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                 [Page 5]
+Duke, et al.             Expires 9 January 2023                 [Page 5]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
 
-Example Structure {
-  One-bit Field (1),
-  7-bit Field with Fixed Value (7) = 61,
-  Field with Variable-Length Integer (i),
-  Arbitrary-Length Field (..),
-  Variable-Length Field (8..24),
-  Variable-Length Field with Dynamic Limit (8..24-len(Variable-Length Field)),
-  Field With Minimum Length (16..),
-  Field With Maximum Length (..128),
-  [Optional Field (64)],
-  Repeated Field (8) ...,
-}
+   Example Structure {
+     One-bit Field (1),
+     7-bit Field with Fixed Value (7) = 61,
+     Field with Variable-Length Integer (i),
+     Arbitrary-Length Field (..),
+     Variable-Length Field (8..24),
+     Variable-Length Field with Dynamic Limit
+              (8..24-len(Variable-Length Field)),
+     Field With Minimum Length (16..),
+     Field With Maximum Length (..128),
+     [Optional Field (64)],
+     Repeated Field (8) ...,
+   }
 
-                       Figure 1: Example Format
+                          Figure 1: Example Format
 
 2.  First CID octet
 
@@ -332,8 +333,7 @@ Example Structure {
 
 
 
-
-Duke, et al.             Expires 8 January 2023                 [Page 6]
+Duke, et al.             Expires 9 January 2023                 [Page 6]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -389,7 +389,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                 [Page 7]
+Duke, et al.             Expires 9 January 2023                 [Page 7]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -445,7 +445,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                 [Page 8]
+Duke, et al.             Expires 9 January 2023                 [Page 8]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -501,7 +501,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                 [Page 9]
+Duke, et al.             Expires 9 January 2023                 [Page 9]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -557,7 +557,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 10]
+Duke, et al.             Expires 9 January 2023                [Page 10]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -613,7 +613,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 11]
+Duke, et al.             Expires 9 January 2023                [Page 11]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -669,7 +669,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 12]
+Duke, et al.             Expires 9 January 2023                [Page 12]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -679,14 +679,16 @@ Internet-Draft                   QUIC-LB                       July 2022
    significant byte, its third argument in the second least significant
    byte, and zeros in all other positions.  Thus,
 
-   expand_left(0xaaba3c, 0x0b, 0x02) = 0xaaba3c0000000000000000000000020b
+   expand_left(0xaaba3c, 0x0b, 0x02) =
+                    0xaaba3c0000000000000000000000020b
 
    expand_right() is similar, except that the second argument is in the
    most significant byte, the third is in the second most significant
    byte, and the first argument is in the least significant bits.
    Therefore,
 
-   expand_right(0xaaba3c, 0x0b, 0x02) = 0x0b020000000000000000000000aaba3c
+   expand_right(0xaaba3c, 0x0b, 0x02) =
+                     0x0b020000000000000000000000aaba3c
 
    Similarly, truncate_left() and truncate_right() take the most
    significant and least significant bits, respectively, from a
@@ -718,17 +720,20 @@ Internet-Draft                   QUIC-LB                       July 2022
        truncate_right( AES_ECB(key, expand_left(left_0, cid_len, 1)),
        len(right_0))
 
+
+
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 13]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    5.  Repeat steps 3 and 4, but use them to compute left_1 by expanding
        and encrypting right_1 with the most significant octet as the
        concatenation of 0b01 and cid_len, and XOR the results with
        left_0.
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 13]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
        left_1 = left_0 ^ truncate_left( AES_ECB(key,
        expand_right(right_1, cid_len, 2)), len(left_0))
@@ -776,12 +781,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-
-
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 14]
+Duke, et al.             Expires 9 January 2023                [Page 14]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -837,7 +837,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 15]
+Duke, et al.             Expires 9 January 2023                [Page 15]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -855,20 +855,23 @@ Internet-Draft                   QUIC-LB                       July 2022
    equal- length components left_2 and right_2.  Then follow the process
    below:
 
-   left_1 = left_2 ^
-     truncate_left(AES_ECB(key, expand_right(right_2), 0xc0 | cid_len))
-   right_1 = right_2 ^
-     truncate_right(AES_ECB(key, expand_left(left_1, 0x80 | cid_len))
-   left_0 = left_1 ^
-     truncate_left(AES_ECB(key, expand_right(right_1), 0x40 | cid_len))
+       left_1 = left_2 ^ truncate_left(
+                     AES_ECB(key, expand_right(right_2, cid_len, 4),
+                             len(left_1))
+       right_1 = right_1 ^ truncate_right(
+                     AES_ECB(key, expand_left(left_1, cid_len, 3),
+                               len(right_1))
+       left_0 = left_1 ^ truncate_left(
+                     AES_ECB(key, expand_right(right_1, cid_len, 2),
+                             len(left_1))
 
    As the load balancer has no need for the nonce, it can conclude after
    3 passes as long as the server ID is entirely contained in left_0
    (i.e., the nonce is at least as large as the server ID).  If the
    server ID is longer, a fourth pass is necessary:
 
-   right_0 = right_1 ^ truncate_right(AES_ECB(key, expand_left(left_0, 1
-   + cid_len)))
+   right_0 = right_1 ^ truncate_right( AES_ECB(key, expand_left(left_0,
+   cid_len, 1), len(right_1))
 
    and the load balancer has to concatenate left_0 and right_0 to obtain
    the complete server ID.
@@ -887,16 +890,16 @@ Internet-Draft                   QUIC-LB                       July 2022
       4-tuple or connection ID changes.  When the CID is encrypted, this
       might reduce computational load.
 
-   *  Incoming Stateless Reset packets and ICMP messages are easily
-      routed to the correct origin server.
 
 
 
-
-Duke, et al.             Expires 8 January 2023                [Page 16]
+Duke, et al.             Expires 9 January 2023                [Page 16]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+   *  Incoming Stateless Reset packets and ICMP messages are easily
+      routed to the correct origin server.
 
    In addition to the increased state requirements, however, load
    balancers cannot detect the CONNECTION_CLOSE frame to indicate the
@@ -946,10 +949,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 17]
+Duke, et al.             Expires 9 January 2023                [Page 17]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1005,7 +1005,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 18]
+Duke, et al.             Expires 9 January 2023                [Page 18]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1061,7 +1061,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 19]
+Duke, et al.             Expires 9 January 2023                [Page 19]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1117,7 +1117,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 20]
+Duke, et al.             Expires 9 January 2023                [Page 20]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1173,7 +1173,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 21]
+Duke, et al.             Expires 9 January 2023                [Page 21]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1222,17 +1222,51 @@ Internet-Draft                   QUIC-LB                       July 2022
    therefore compare the expected rate at which servers will generate
    CIDs with the lifetime of a configuration.
 
-9.  IANA Considerations
-
-   There are no IANA requirements.
 
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 22]
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 22]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+8.7.  Distinguishing Attacks
+
+   The Four Pass Encryption algorithm is structured as a 4-round Feistel
+   network with non-bijective round function.  As such, it does not
+   offer a very high security level against distinguishing attacks, as
+   explained in [Patarin2008].  Attackers can mount these attacks if
+   they are in possession of O(SQRT(len/2)) pairs of ciphertext and
+   known corresponding plain text, where "len" is the sum of the lengths
+   of the Server ID and the Nonce.
+
+   The authors considered increasing the number of passes from 4 to 12,
+   which would definitely block these attacks.  However, this would
+   require 12 round of AES decryption by load balancers accessing the
+   CID, a cost deemed prohibitive in the planned deployments.
+
+   The attacks described in [Patarin2008] rely on known plain text.  In
+   a normal deployment, the plain text is only known by the server that
+   generates the ID and by the load balancer that decrypts the content
+   of the CID.  Attackers would have to compensate by guesses about the
+   allocation of server identifiers or the generation of nonces.  The
+   these attacks are thus mitigated by making nonces hard to guess, as
+   specified in Section 8.6, and by rules related to mixed deployments
+   that use both clear text CID and encrypted CID, for example when
+   transitioning from clear text to encryption.  Such deployments MUST
+   use different server ID allocations for the clear text and the
+   encrypted versions.
+
+   These attacks cannot be mounted against the Single Pass Encryption
+   algorithm.
+
+9.  IANA Considerations
+
+   There are no IANA requirements.
 
 10.  References
 
@@ -1248,6 +1282,13 @@ Internet-Draft                   QUIC-LB                       July 2022
               <https://www.rfc-editor.org/info/rfc9000>.
 
 10.2.  Informative References
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 23]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    [I-D.draft-ietf-tls-dtls13]
               Rescorla, E., Tschofenig, H., and N. Modadugu, "The
@@ -1271,6 +1312,11 @@ Internet-Draft                   QUIC-LB                       July 2022
               <https://www.ietf.org/archive/id/draft-ietf-tls-esni-
               14.txt>.
 
+   [Patarin2008]
+              Patarin, J., "Generic Attacks on Feistel Schemes -
+              Extended Version", 2008,
+              <https://eprint.iacr.org/2008/036.pdf>.
+
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
@@ -1280,16 +1326,6 @@ Internet-Draft                   QUIC-LB                       July 2022
               Security", RFC 4347, DOI 10.17487/RFC4347, April 2006,
               <https://www.rfc-editor.org/info/rfc4347>.
 
-
-
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 23]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    [RFC6020]  Bjorklund, M., Ed., "YANG - A Data Modeling Language for
               the Network Configuration Protocol (NETCONF)", RFC 6020,
               DOI 10.17487/RFC6020, October 2010,
@@ -1298,6 +1334,17 @@ Internet-Draft                   QUIC-LB                       July 2022
    [RFC6347]  Rescorla, E. and N. Modadugu, "Datagram Transport Layer
               Security Version 1.2", RFC 6347, DOI 10.17487/RFC6347,
               January 2012, <https://www.rfc-editor.org/info/rfc6347>.
+
+
+
+
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 24]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    [RFC7696]  Housley, R., "Guidelines for Cryptographic Algorithm
               Agility and Selecting Mandatory-to-Implement Algorithms",
@@ -1324,256 +1371,96 @@ Appendix A.  QUIC-LB YANG Model
    configuration.  There is one model for the server and one for the
    middlebox (i.e the load balancer and/or Retry Service).
 
-  module ietf-quic-lb-server {
-    yang-version "1.1";
-    namespace "urn:ietf:params:xml:ns:yang:ietf-quic-lb";
-    prefix "quic-lb";
+   module ietf-quic-lb-server {
+     yang-version "1.1";
+     namespace "urn:ietf:params:xml:ns:yang:ietf-quic-lb";
+     prefix "quic-lb";
 
-    import ietf-yang-types {
-      prefix yang;
-      reference
-        "RFC 6991: Common YANG Data Types.";
-    }
-
-    import ietf-inet-types {
-      prefix inet;
-      reference
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 24]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
-        "RFC 6991: Common YANG Data Types.";
-    }
-
-    organization
-      "IETF QUIC Working Group";
-
-    contact
-      "WG Web:   <http://datatracker.ietf.org/wg/quic>
-       WG List:  <quic@ietf.org>
-
-       Authors: Martin Duke (martin.h.duke at gmail dot com)
-                Nick Banks (nibanks at microsoft dot com)
-                Christian Huitema (huitema at huitema.net)";
-
-    description
-      "This module enables the explicit cooperation of QUIC servers with
-       trusted intermediaries without breaking important protocol
-       features.
-
-       Copyright (c) 2022 IETF Trust and the persons identified as
-       authors of the code.  All rights reserved.
-
-       Redistribution and use in source and binary forms, with or
-       without modification, is permitted pursuant to, and subject to
-       the license terms contained in, the Simplified BSD License set
-       forth in Section 4.c of the IETF Trust's Legal Provisions
-       Relating to IETF Documents
-       (https://trustee.ietf.org/license-info).
-
-       This version of this YANG module is part of RFC XXXX
-       (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
-       for full legal notices.
-
-       The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
-       NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
-       'MAY', and 'OPTIONAL' in this document are to be interpreted as
-       described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
-       they appear in all capitals, as shown here.";
-
-    revision "2022-02-11" {
-      description
-        "Updated to design in version 13 of the draft";
-      reference
-        "RFC XXXX, QUIC-LB: Generating Routable QUIC Connection IDs";
-    }
-
-    container quic-lb {
-      presence "The container for QUIC-LB configuration.";
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 25]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
-      description
-        "QUIC-LB container.";
-
-      typedef quic-lb-key {
-        type yang:hex-string {
-          length 47;
-        }
-        description
-          "This is a 16-byte key, represented with 47 bytes";
-      }
-
-      leaf config-id {
-        type uint8 {
-          range "0..2";
-        }
-        mandatory true;
-        description
-          "Identifier for this CID configuration.";
-      }
-
-      leaf first-octet-encodes-cid-length {
-        type boolean;
-        default false;
-        description
-          "If true, the six least significant bits of the first CID
-           octet encode the CID length minus one.";
-      }
-
-      leaf server-id-length {
-        type uint8 {
-          range "1..15";
-        }
-        must '. <= (19 - ../nonce-length)' {
-          error-message
-            "Server ID and nonce lengths must sum to no more than 19.";
-        }
-        mandatory true;
-        description
-          "Length (in octets) of a server ID. Further range-limited
-           by nonce-length.";
-      }
-
-      leaf nonce-length {
-        type uint8 {
-          range "4..18";
-        }
-        mandatory true;
-        description
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 26]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
-          "Length, in octets, of the nonce. Short nonces mean there will
-           be frequent configuration updates.";
-      }
-
-      leaf cid-key {
-        type quic-lb-key;
-        description
-          "Key for encrypting the connection ID.";
-      }
-
-      leaf server-id {
-        type yang:hex-string;
-        must "string-length(.) = 3 * ../../server-id-length - 1";
-        mandatory true;
-        description
-          "An allocated server ID";
-      }
-    }
-  }
-
- module ietf-quic-lb-middlebox {
-   yang-version "1.1";
-   namespace "urn:ietf:params:xml:ns:yang:ietf-quic-lb";
-   prefix "quic-lb";
-
-   import ietf-yang-types {
-     prefix yang;
-     reference
-       "RFC 6991: Common YANG Data Types.";
-   }
-
-   import ietf-inet-types {
-     prefix inet;
-     reference
-       "RFC 6991: Common YANG Data Types.";
-   }
-
-   organization
-     "IETF QUIC Working Group";
-
-   contact
-     "WG Web:   <http://datatracker.ietf.org/wg/quic>
-      WG List:  <quic@ietf.org>
-
-      Authors: Martin Duke (martin.h.duke at gmail dot com)
-               Nick Banks (nibanks at microsoft dot com)
-               Christian Huitema (huitema at huitema.net)";
-
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 27]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
-   description
-     "This module enables the explicit cooperation of QUIC servers with
-      trusted intermediaries without breaking important protocol
-      features.
-
-      Copyright (c) 2021 IETF Trust and the persons identified as
-      authors of the code.  All rights reserved.
-
-      Redistribution and use in source and binary forms, with or
-      without modification, is permitted pursuant to, and subject to
-      the license terms contained in, the Simplified BSD License set
-      forth in Section 4.c of the IETF Trust's Legal Provisions
-      Relating to IETF Documents
-      (https://trustee.ietf.org/license-info).
-
-      This version of this YANG module is part of RFC XXXX
-      (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
-      for full legal notices.
-
-      The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
-      NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
-      'MAY', and 'OPTIONAL' in this document are to be interpreted as
-      described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
-      they appear in all capitals, as shown here.";
-
-   revision "2021-02-11" {
-     description
-       "Updated to design in version 13 of the draft";
-     reference
-       "RFC XXXX, QUIC-LB: Generating Routable QUIC Connection IDs";
-   }
-
-   container quic-lb {
-     presence "The container for QUIC-LB configuration.";
-
-     description
-       "QUIC-LB container.";
-
-     typedef quic-lb-key {
-       type yang:hex-string {
-         length 47;
-       }
-       description
-         "This is a 16-byte key, represented with 47 bytes";
+     import ietf-yang-types {
+       prefix yang;
+       reference
+         "RFC 6991: Common YANG Data Types.";
      }
 
-     list cid-configs {
-       key "config-rotation-bits";
+     import ietf-inet-types {
+       prefix inet;
+       reference
+         "RFC 6991: Common YANG Data Types.";
+     }
+
+     organization
+       "IETF QUIC Working Group";
+
+     contact
+       "WG Web:   <http://datatracker.ietf.org/wg/quic>
+        WG List:  <quic@ietf.org>
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 28]
+Duke, et al.             Expires 9 January 2023                [Page 25]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
 
-       description
-         "List up to three load balancer configurations";
+        Authors: Martin Duke (martin.h.duke at gmail dot com)
+                 Nick Banks (nibanks at microsoft dot com)
+                 Christian Huitema (huitema at huitema.net)";
 
-       leaf config-rotation-bits {
+     description
+       "This module enables the explicit cooperation of QUIC servers
+        with trusted intermediaries without breaking important
+        protocol features.
+
+        Copyright (c) 2022 IETF Trust and the persons identified as
+        authors of the code.  All rights reserved.
+
+        Redistribution and use in source and binary forms, with or
+        without modification, is permitted pursuant to, and subject to
+        the license terms contained in, the Simplified BSD License set
+        forth in Section 4.c of the IETF Trust's Legal Provisions
+        Relating to IETF Documents
+        (https://trustee.ietf.org/license-info).
+
+        This version of this YANG module is part of RFC XXXX
+        (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
+        for full legal notices.
+
+        The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
+        NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
+        'MAY', and 'OPTIONAL' in this document are to be interpreted as
+        described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
+        they appear in all capitals, as shown here.";
+
+     revision "2022-02-11" {
+       description
+         "Updated to design in version 13 of the draft";
+       reference
+         "RFC XXXX, QUIC-LB: Generating Routable QUIC Connection IDs";
+     }
+
+     container quic-lb {
+       presence "The container for QUIC-LB configuration.";
+
+       description
+         "QUIC-LB container.";
+
+       typedef quic-lb-key {
+         type yang:hex-string {
+           length 47;
+         }
+         description
+           "This is a 16-byte key, represented with 47 bytes";
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 26]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
+       }
+
+       leaf config-id {
          type uint8 {
            range "0..2";
          }
@@ -1582,24 +1469,27 @@ Internet-Draft                   QUIC-LB                       July 2022
            "Identifier for this CID configuration.";
        }
 
+       leaf first-octet-encodes-cid-length {
+         type boolean;
+         default false;
+         description
+           "If true, the six least significant bits of the first
+            CID octet encode the CID length minus one.";
+       }
+
        leaf server-id-length {
          type uint8 {
            range "1..15";
          }
          must '. <= (19 - ../nonce-length)' {
            error-message
-             "Server ID and nonce lengths must sum to no more than 19.";
+             "Server ID and nonce lengths must sum
+              to no more than 19.";
          }
          mandatory true;
          description
            "Length (in octets) of a server ID. Further range-limited
             by nonce-length.";
-       }
-
-       leaf cid-key {
-         type quic-lb-key;
-         description
-           "Key for encrypting the connection ID.";
        }
 
        leaf nonce-length {
@@ -1612,37 +1502,196 @@ Internet-Draft                   QUIC-LB                       July 2022
             will be frequent configuration updates.";
        }
 
-       list server-id-mappings {
-         key "server-id";
-         description "Statically allocated Server IDs";
-
-         leaf server-id {
-           type yang:hex-string;
+       leaf cid-key {
+         type quic-lb-key;
+         description
+           "Key for encrypting the connection ID.";
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 29]
+Duke, et al.             Expires 9 January 2023                [Page 27]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
 
-           must "string-length(.) = 3 * ../../server-id-length - 1";
-           mandatory true;
-           description
-             "An allocated server ID";
+       }
 
+       leaf server-id {
+         type yang:hex-string;
+         must "string-length(.) = 3 * ../../server-id-length - 1";
+         mandatory true;
+         description
+           "An allocated server ID";
+       }
+     }
+   }
+
+   module ietf-quic-lb-middlebox {
+     yang-version "1.1";
+     namespace "urn:ietf:params:xml:ns:yang:ietf-quic-lb";
+     prefix "quic-lb";
+
+     import ietf-yang-types {
+       prefix yang;
+       reference
+         "RFC 6991: Common YANG Data Types.";
+     }
+
+     import ietf-inet-types {
+       prefix inet;
+       reference
+         "RFC 6991: Common YANG Data Types.";
+     }
+
+     organization
+       "IETF QUIC Working Group";
+
+     contact
+       "WG Web:   <http://datatracker.ietf.org/wg/quic>
+        WG List:  <quic@ietf.org>
+
+        Authors: Martin Duke (martin.h.duke at gmail dot com)
+                 Nick Banks (nibanks at microsoft dot com)
+                 Christian Huitema (huitema at huitema.net)";
+
+     description
+       "This module enables the explicit cooperation of QUIC servers
+        with trusted intermediaries without breaking important
+        protocol features.
+
+        Copyright (c) 2021 IETF Trust and the persons identified as
+        authors of the code.  All rights reserved.
+
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 28]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
+        Redistribution and use in source and binary forms, with or
+        without modification, is permitted pursuant to, and subject to
+        the license terms contained in, the Simplified BSD License set
+        forth in Section 4.c of the IETF Trust's Legal Provisions
+        Relating to IETF Documents
+        (https://trustee.ietf.org/license-info).
+
+        This version of this YANG module is part of RFC XXXX
+        (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
+        for full legal notices.
+
+        The key words 'MUST', 'MUST NOT', 'REQUIRED', 'SHALL', 'SHALL
+        NOT', 'SHOULD', 'SHOULD NOT', 'RECOMMENDED', 'NOT RECOMMENDED',
+        'MAY', and 'OPTIONAL' in this document are to be interpreted as
+        described in BCP 14 (RFC 2119) (RFC 8174) when, and only when,
+        they appear in all capitals, as shown here.";
+
+     revision "2021-02-11" {
+       description
+         "Updated to design in version 13 of the draft";
+       reference
+         "RFC XXXX, QUIC-LB: Generating Routable QUIC Connection IDs";
+     }
+
+     container quic-lb {
+       presence "The container for QUIC-LB configuration.";
+
+       description
+         "QUIC-LB container.";
+
+       typedef quic-lb-key {
+         type yang:hex-string {
+           length 47;
+         }
+         description
+           "This is a 16-byte key, represented with 47 bytes";
+       }
+
+       list cid-configs {
+         key "config-rotation-bits";
+         description
+           "List up to three load balancer configurations";
+
+         leaf config-rotation-bits {
+           type uint8 {
+             range "0..2";
+           }
+           mandatory true;
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 29]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
+           description
+             "Identifier for this CID configuration.";
          }
 
-         leaf server-address {
-           type inet:ip-address;
+         leaf server-id-length {
+           type uint8 {
+             range "1..15";
+           }
+           must '. <= (19 - ../nonce-length)' {
+             error-message
+               "Server ID and nonce lengths must sum to
+                no more than 19.";
+           }
            mandatory true;
            description
-             "Destination address corresponding to the server ID";
+             "Length (in octets) of a server ID. Further range-limited
+              by nonce-length.";
+         }
+
+         leaf cid-key {
+           type quic-lb-key;
+           description
+             "Key for encrypting the connection ID.";
+         }
+
+         leaf nonce-length {
+           type uint8 {
+             range "4..18";
+           }
+           mandatory true;
+           description
+             "Length, in octets, of the nonce. Short nonces mean there
+              will be frequent configuration updates.";
+         }
+
+         list server-id-mappings {
+           key "server-id";
+           description "Statically allocated Server IDs";
+
+           leaf server-id {
+             type yang:hex-string;
+             must "string-length(.) = 3 * ../../server-id-length - 1";
+             mandatory true;
+             description
+               "An allocated server ID";
+
+           }
+
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 30]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
+           leaf server-address {
+             type inet:ip-address;
+             mandatory true;
+             description
+               "Destination address corresponding to the server ID";
+           }
          }
        }
      }
    }
- }
 
 A.1.  Tree Diagram
 
@@ -1672,16 +1721,6 @@ Appendix B.  Load Balancer Test Vectors
 
    This section uses the following abbreviations:
 
-
-
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 30]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    cid      Connection ID
    cr_bits  Config Rotation Bits
    LB       Load Balancer
@@ -1690,6 +1729,14 @@ Internet-Draft                   QUIC-LB                       July 2022
    In all cases, the server is configured to encode the CID length.
 
 B.1.  Unencrypted CIDs
+
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 31]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    cr_bits sid nonce cid
    0 c4605e 4504cc4f 07c4605e4504cc4f
@@ -1705,9 +1752,12 @@ B.2.  Encrypted CIDs
 
    cr_bits sid nonce cid
    0 ed793a ee080dbf 0727edaa37e7fac8
-   1 ed793a51d49b8f5fab65 ee080dbf48 4f22614a97ceee84341ed7fbfeb1e6e2
-   2 ed793a51d49b8f5f ee080dbf48c0d1e5 904dd2d05a7b0de9b2b9907afb5ecf8cc3
-   0 ed793a51d49b8f5fab ee080dbf48c0d1e55d 125e3b00aa5fcfd1a9a58102a89a19a1e4a10e
+   1 ed793a51d49b8f5fab65 ee080dbf48
+                            4f22614a97ceee84341ed7fbfeb1e6e2
+   2 ed793a51d49b8f5f ee080dbf48c0d1e5
+                            904dd2d05a7b0de9b2b9907afb5ecf8cc3
+   0 ed793a51d49b8f5fab ee080dbf48c0d1e55d
+                            125e3b00aa5fcfd1a9a58102a89a19a1e4a10e
 
 Appendix C.  Interoperability with DTLS over UDP
 
@@ -1730,18 +1780,19 @@ C.1.  DTLS 1.0 and 1.2
    consistently as long as the 4-tuple does not change.  Note that DTLS
    1.0 has been deprecated by the IETF.
 
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 31]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    The first octet of every DTLS 1.0 or 1.2 datagram contains the
    content type.  A QUIC-LB load balancer will interpret any content
    type less than 128 as a short header packet, meaning that the
    subsequent octets should contain a connection ID.
+
+
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 32]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    Existing TLS content types comfortably fit in the range below 128.
    Assignment of codepoints greater than 64 would require coordination
@@ -1786,18 +1837,18 @@ C.2.  DTLS 1.3
    However, if the client does not include the connection_id extension
    in its ClientHello, the server is unable to use connection IDs.  In
    this case, non- handshake packets will appear to contain random
-
-
-
-Duke, et al.             Expires 8 January 2023                [Page 32]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    connection IDs and be routed randomly.  Thus, unmodified QUIC-LB load
    balancers will not work with DTLS 1.3 if the client does not
    advertise support for connection IDs, or the server does not request
    the use of a compliant connection ID.
+
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 33]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    A QUIC-LB load balancer might be modified to identify DTLS 1.3
    packets and correctly parse the fields to identify when there is no
@@ -1832,6 +1883,8 @@ E.1.  since draft-ietf-quic-load-balancers-13
 
    *  Added requirements for codepoint 0b11.
 
+   *  Describe Distinguishing Attack in Security Considerations.
+
 E.2.  since draft-ietf-quic-load-balancers-12
 
    *  Separated Retry Service design into a separate draft
@@ -1842,16 +1895,16 @@ E.3.  since draft-ietf-quic-load-balancers-11
 
 E.4.  since draft-ietf-quic-load-balancers-10
 
+   *  Refactored algorithm descriptions; made the 4-pass algorithm
+      easier to implement
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 33]
+
+Duke, et al.             Expires 9 January 2023                [Page 34]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
-
-   *  Refactored algorithm descriptions; made the 4-pass algorithm
-      easier to implement
 
    *  Revised test vectors
 
@@ -1901,7 +1954,10 @@ E.8.  since draft-ietf-quic-load-balancers-06
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 34]
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 35]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -1957,7 +2013,7 @@ E.12.  since-draft-ietf-quic-load-balancers-02
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 35]
+Duke, et al.             Expires 9 January 2023                [Page 36]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -2013,7 +2069,7 @@ E.19.  Since draft-duke-quic-load-balancers-02
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 36]
+Duke, et al.             Expires 9 January 2023                [Page 37]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -2069,4 +2125,4 @@ Authors' Addresses
 
 
 
-Duke, et al.             Expires 8 January 2023                [Page 37]
+Duke, et al.             Expires 9 January 2023                [Page 38]
