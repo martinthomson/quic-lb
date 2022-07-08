@@ -88,15 +88,15 @@ Table of Contents
      2.1.  Config Rotation . . . . . . . . . . . . . . . . . . . . .   6
      2.2.  Configuration Failover  . . . . . . . . . . . . . . . . .   7
      2.3.  Length Self-Description . . . . . . . . . . . . . . . . .   7
-     2.4.  Format  . . . . . . . . . . . . . . . . . . . . . . . . .   7
+     2.4.  Format  . . . . . . . . . . . . . . . . . . . . . . . . .   8
    3.  Load Balancing Preliminaries  . . . . . . . . . . . . . . . .   8
-     3.1.  Unroutable Connection IDs . . . . . . . . . . . . . . . .   8
+     3.1.  Unroutable Connection IDs . . . . . . . . . . . . . . . .   9
      3.2.  Fallback Algorithms . . . . . . . . . . . . . . . . . . .  10
      3.3.  Server ID Allocation  . . . . . . . . . . . . . . . . . .  10
    4.  Server ID Encoding in Connection IDs  . . . . . . . . . . . .  11
      4.1.  CID format  . . . . . . . . . . . . . . . . . . . . . . .  11
      4.2.  Configuration Agent Actions . . . . . . . . . . . . . . .  11
-     4.3.  Server Actions  . . . . . . . . . . . . . . . . . . . . .  11
+     4.3.  Server Actions  . . . . . . . . . . . . . . . . . . . . .  12
        4.3.1.  Special Case: Single Pass Encryption  . . . . . . . .  12
        4.3.2.  General Case: Four-Pass Encryption  . . . . . . . . .  12
      4.4.  Load Balancer Actions . . . . . . . . . . . . . . . . . .  15
@@ -146,11 +146,11 @@ Internet-Draft                   QUIC-LB                       July 2022
      E.6.  since draft-ietf-quic-load-balancers-08 . . . . . . . . .  35
      E.7.  since draft-ietf-quic-load-balancers-07 . . . . . . . . .  35
      E.8.  since draft-ietf-quic-load-balancers-06 . . . . . . . . .  35
-     E.9.  since draft-ietf-quic-load-balancers-05 . . . . . . . . .  35
+     E.9.  since draft-ietf-quic-load-balancers-05 . . . . . . . . .  36
      E.10. since draft-ietf-quic-load-balancers-04 . . . . . . . . .  36
      E.11. since-draft-ietf-quic-load-balancers-03 . . . . . . . . .  36
      E.12. since-draft-ietf-quic-load-balancers-02 . . . . . . . . .  36
-     E.13. since-draft-ietf-quic-load-balancers-01 . . . . . . . . .  36
+     E.13. since-draft-ietf-quic-load-balancers-01 . . . . . . . . .  37
      E.14. since-draft-ietf-quic-load-balancers-00 . . . . . . . . .  37
      E.15. Since draft-duke-quic-load-balancers-06 . . . . . . . . .  37
      E.16. Since draft-duke-quic-load-balancers-05 . . . . . . . . .  37
@@ -353,13 +353,26 @@ Internet-Draft                   QUIC-LB                       July 2022
    If a server has not received a valid QUIC-LB configuration, and
    believes that low-state, Connection-ID aware load balancers are in
    the path, it SHOULD generate connection IDs with the config rotation
-   bits set to '11' and SHOULD use the "disable_active_migration"
+   bits set to 0b11 and SHOULD use the "disable_active_migration"
    transport parameter in all new QUIC connections.  It SHOULD NOT send
    NEW_CONNECTION_ID frames with new values.
 
    A load balancer that sees a connection ID with config rotation bits
-   set to '11' MUST revert to 5-tuple routing.  These connection IDs may
-   be of any length; however, see Section 8.6 for limits on this length.
+   set to 0b11 MUST route using an algorithm based solely on the
+   address/port 4-tuple, which is consistent well beyond the QUIC
+   handshake.  However, a load balancer MAY observe the connection IDs
+   used during the handshake and populate a connection ID table that
+   allows the connection to survive a NAT rebinding, and reduces the
+   probability of connection failure due to a change in the number of
+   servers.
+
+   When using codepoint 0b11, all bytes but the first SHOULD have no
+   larger of a chance of collision as random bytes.  The connection ID
+   SHOULD be of at least length 8 to provide 7 bytes of entropy after
+   the first octet with a low chance of collision.  Furthermore, servers
+   in a pool SHOULD also use a consistent connection ID length to
+   simplify the load balancer's extraction of a connection ID from short
+   headers.
 
 2.3.  Length Self-Description
 
@@ -368,6 +381,18 @@ Internet-Draft                   QUIC-LB                       July 2022
    connection ID.  However, on physical devices operating multiple QUIC
    servers, it is impractical to efficiently lookup these keys if the
    connection ID does not self-encode its own length.
+
+
+
+
+
+
+
+
+Duke, et al.             Expires 9 January 2023                 [Page 7]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    Note that this is a function of particular server devices and is
    irrelevant to load balancers.  As such, load balancers MAY omit this
@@ -386,13 +411,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    }
 
                         Figure 2: First Octet Format
-
-
-
-Duke, et al.             Expires 9 January 2023                 [Page 7]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
    The first octet has the following fields:
 
@@ -423,6 +441,15 @@ Internet-Draft                   QUIC-LB                       July 2022
    server ID.  Load balancers decode the server ID from the CID in
    incoming packets to route to the correct server.
 
+
+
+
+
+Duke, et al.             Expires 9 January 2023                 [Page 8]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    There are situations where a server pool might be operating two or
    more routing algorithms or parameter sets simultaneously.  The load
    balancer uses the first two bits of the connection ID to multiplex
@@ -440,19 +467,9 @@ Internet-Draft                   QUIC-LB                       July 2022
    balancer.  Those that are not routable are "unroutable DCIDs" and
    receive similar treatment regardless of why they're unroutable:
 
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                 [Page 8]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    *  The config rotation bits (Section 2.1) may not correspond to an
-      active configuration.  Note: a packet with a DCID that indicates
-      5-tuple routing (see Section 2.2) is always routable.
+      active configuration.  Note: a packet with a DCID with config ID
+      codepoint 0b11 (see Section 2.2) is always routable.
 
    *  The DCID might not be long enough for the decoder to process.
 
@@ -475,6 +492,20 @@ Internet-Draft                   QUIC-LB                       July 2022
    When forwarding a packet with a long header and unroutable DCID, load
    balancers MUST use a fallback algorithm as specified in Section 3.2.
 
+
+
+
+
+
+
+
+
+
+Duke, et al.             Expires 9 January 2023                 [Page 9]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    Load balancers MAY drop packets with long headers and unroutable
    DCIDs if and only if it knows that the encoded QUIC version does not
    allow an unroutable DCID in a packet with that signature.  For
@@ -492,19 +523,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    available mechanisms to induce the client to use a routable CID in
    future packets.  In QUIC version 1, this requires using a routable
    CID in the Source CID field of server-generated long headers.
-
-
-
-
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                 [Page 9]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
 3.2.  Fallback Algorithms
 
@@ -537,6 +555,13 @@ Internet-Draft                   QUIC-LB                       July 2022
    The configuration agent chooses a server ID length for each
    configuration that MUST be at least one octet.
 
+
+
+Duke, et al.             Expires 9 January 2023                [Page 10]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    A QUIC-LB configuration MAY significantly over-provision the server
    ID space (i.e., provide far more codepoints than there are servers)
    to increase the probability that a randomly generated Destination
@@ -553,14 +578,6 @@ Internet-Draft                   QUIC-LB                       July 2022
 
    A server encodes one of its assigned server IDs in any CID it
    generates using the relevant configuration.
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 10]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
 4.  Server ID Encoding in Connection IDs
 
@@ -594,6 +611,13 @@ Internet-Draft                   QUIC-LB                       July 2022
    The nonce length MUST be at least 4 octets.  The server ID length
    MUST be at least 1 octet.
 
+
+
+Duke, et al.             Expires 9 January 2023                [Page 11]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    As QUIC version 1 limits connection IDs to 20 octets, the server ID
    and nonce lengths MUST sum to 19 octets or less.
 
@@ -610,14 +634,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    The server MAY append additional bytes to the connection ID, up to
    the limit specified in that version of QUIC, for its own use.  These
    bytes MUST NOT provide observers with any information that could link
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 11]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    two connection IDs to the same connection, client, or server.  In
    particular, all servers using a configuration MUST consistently add
    the same length to each connection ID, to preserve the linkability
@@ -651,6 +667,13 @@ Internet-Draft                   QUIC-LB                       July 2022
    shifting necessary in the event that there are an odd number of
    octets.
 
+
+
+Duke, et al.             Expires 9 January 2023                [Page 12]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    The expand_left() function outputs 16 octets, with its first argument
    in the most significant bits, its second argument in the least
    significant byte, its third argument in the second least significant
@@ -666,13 +689,6 @@ Internet-Draft                   QUIC-LB                       July 2022
 
    expand_right(0xaaba3c, 0x0b, 0x02) =
                      0x0b020000000000000000000000aaba3c
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 12]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
 
    Similarly, truncate_left() and truncate_right() take the most
    significant and least significant bits, respectively, from a
@@ -704,6 +720,16 @@ Internet-Draft                   QUIC-LB                       July 2022
        truncate_right( AES_ECB(key, expand_left(left_0, cid_len, 1)),
        len(right_0))
 
+
+
+
+
+
+Duke, et al.             Expires 9 January 2023                [Page 13]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    5.  Repeat steps 3 and 4, but use them to compute left_1 by expanding
        and encrypting right_1 with the most significant octet as the
        concatenation of 0b01 and cid_len, and XOR the results with
@@ -720,16 +746,6 @@ Internet-Draft                   QUIC-LB                       July 2022
        right_2 = right_1 ^ truncate_right( AES_ECB(key,
        expand_left(left_1, cid_len, 3), len(right_1))
 
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 13]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    7.  Repeat steps 3 and 4, but use them to compute left_2 by expanding
        and encrypting right_2 with the most significant octet as the
        concatenation of 0b11 ands cid_len, and XOR the results with
@@ -744,22 +760,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    The following example executes the steps for the provided inputs.
    Note that the plaintext is of odd octet length, so the middle octet
    will be split evenly left_0 and right_0.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -883,12 +883,12 @@ Internet-Draft                   QUIC-LB                       July 2022
    each incoming packet and route that packet accordingly.
 
    However, once the routing decision has been made, the load balancer
-   MAY associate the 4-tuple with the decision.  This has two
-   advantages:
+   MAY associate the 4-tuple or connection ID with the decision.  This
+   has two advantages:
 
-   *  The load balancer only extracts the server ID once per incoming
-      4-tuple.  When the CID is encrypted, this substantially reduces
-      computational load.
+   *  The load balancer only extracts the server ID once until the
+      4-tuple or connection ID changes.  When the CID is encrypted, this
+      might reduce computational load.
 
 
 
@@ -1133,9 +1133,9 @@ Internet-Draft                   QUIC-LB                       July 2022
       distinguished by the config rotation bits (Section 2.1), exposing
       information about the target domain to the entire network; or
 
-   *  tenants can use 4-tuple routing in their CIDs (in which case they
-      SHOULD disable migration in their connections), which neutralizes
-      the value of QUIC-LB but preserves privacy.
+   *  tenants can use the 0b11 codepoint in their CIDs (in which case
+      they SHOULD disable migration in their connections), which
+      neutralizes the value of QUIC-LB but preserves privacy.
 
    When configuring QUIC-LB, administrators must evaluate the privacy
    tradeoff considering the relative value of each of these properties,
@@ -1881,6 +1881,8 @@ E.1.  since draft-ietf-quic-load-balancers-13
 
    *  Incorporated Connection ID length in argument of truncate function
 
+   *  Added requirements for codepoint 0b11.
+
    *  Describe Distinguishing Attack in Security Considerations.
 
 E.2.  since draft-ietf-quic-load-balancers-12
@@ -1896,8 +1898,6 @@ E.4.  since draft-ietf-quic-load-balancers-10
    *  Refactored algorithm descriptions; made the 4-pass algorithm
       easier to implement
 
-   *  Revised test vectors
-
 
 
 
@@ -1905,6 +1905,8 @@ Duke, et al.             Expires 9 January 2023                [Page 34]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+   *  Revised test vectors
 
    *  Split YANG model into a server and middlebox version
 
@@ -1949,11 +1951,9 @@ E.8.  since draft-ietf-quic-load-balancers-06
 
    *  Added retry service considerations for non-Initial packets
 
-E.9.  since draft-ietf-quic-load-balancers-05
 
-   *  Added low-config CID for further discussion
 
-   *  Complete revision of shared-state Retry Token
+
 
 
 
@@ -1961,6 +1961,12 @@ Duke, et al.             Expires 9 January 2023                [Page 35]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+E.9.  since draft-ietf-quic-load-balancers-05
+
+   *  Added low-config CID for further discussion
+
+   *  Complete revision of shared-state Retry Token
 
    *  Added YANG model
 
@@ -2005,18 +2011,18 @@ E.12.  since-draft-ietf-quic-load-balancers-02
 
    *  Allow dropped long-header packets for known QUIC versions
 
-E.13.  since-draft-ietf-quic-load-balancers-01
-
-   *  Test vectors for load balancer decoding
-
-   *  Deleted remnants of in-band protocol
-
 
 
 Duke, et al.             Expires 9 January 2023                [Page 36]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+E.13.  since-draft-ietf-quic-load-balancers-01
+
+   *  Test vectors for load balancer decoding
+
+   *  Deleted remnants of in-band protocol
 
    *  Light edit of Retry Services section
 
@@ -2060,12 +2066,6 @@ E.18.  Since draft-duke-quic-load-balancers-03
 
 E.19.  Since draft-duke-quic-load-balancers-02
 
-   *  Added Config Rotation
-
-   *  Added failover mode
-
-   *  Tweaks to existing CID algorithms
-
 
 
 
@@ -2073,6 +2073,12 @@ Duke, et al.             Expires 9 January 2023                [Page 37]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+   *  Added Config Rotation
+
+   *  Added failover mode
+
+   *  Tweaks to existing CID algorithms
 
    *  Added Block Cipher CID algorithm
 
@@ -2107,12 +2113,6 @@ Authors' Addresses
    Christian Huitema
    Private Octopus Inc.
    Email: huitema@huitema.net
-
-
-
-
-
-
 
 
 
