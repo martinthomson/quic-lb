@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-07T17:01:14.106490+00:00",
+  "timestamp": "2022-07-08T16:03:32.242917+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -9214,7 +9214,7 @@
       "labels": [],
       "body": "Not really sure that we have to do that, but I did it anyhow. \r\nAlso fixed a couple of random line length issues that were causing errors in xml2rfc",
       "createdAt": "2022-07-07T06:01:41Z",
-      "updatedAt": "2022-07-07T06:01:41Z",
+      "updatedAt": "2022-07-07T19:42:58Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "main",
       "baseRefOid": "6c3767308940722dd8e0a2da06dce30810d0a91d",
@@ -9225,7 +9225,58 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thanks for doing this. One comment:\r\n\r\nI don't think the Security Considerations section here fully captures our doubts about the need for this. IIRC, the 4-pass is only vulnerable to known-plaintext attacks, which seem hard to mount here. And as you state, if the consequence is the attacker discovering that the CID is not random, it's not obvious to me that it's a serious problem.",
+          "createdAt": "2022-07-07T19:42:58Z",
+          "updatedAt": "2022-07-07T19:42:58Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 176,
+      "id": "PR_kwDODoD6yc47E4fC",
+      "title": "Just4passes",
+      "url": "https://github.com/quicwg/load-balancers/pull/176",
+      "state": "MERGED",
+      "author": "huitema",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Discuss Distinguishing Attack in security section.\r\nFix specification of Four Passes decryption\r\nFix number of kramdown issues.",
+      "createdAt": "2022-07-08T03:19:20Z",
+      "updatedAt": "2022-07-08T16:03:06Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "main",
+      "baseRefOid": "6c3767308940722dd8e0a2da06dce30810d0a91d",
+      "headRepository": "getdnsapi/load-balancers",
+      "headRefName": "just4passes",
+      "headRefOid": "faa0b882748c407b531c0b6a14a2c674ce372b44",
+      "closedAt": "2022-07-08T16:03:01Z",
+      "mergedAt": "2022-07-08T16:03:01Z",
+      "mergedBy": "martinduke",
+      "mergeCommit": {
+        "oid": "8569234f87c482c8a081e28a0ff184d83c02e700"
+      },
+      "comments": [
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@martinduke I think this simple PR is ready.",
+          "createdAt": "2022-07-08T03:33:22Z",
+          "updatedAt": "2022-07-08T03:33:22Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Thank you, this is perfect.",
+          "createdAt": "2022-07-08T16:03:05Z",
+          "updatedAt": "2022-07-08T16:03:05Z"
+        }
+      ],
       "reviews": []
     }
   ]
