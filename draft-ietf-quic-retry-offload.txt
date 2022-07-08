@@ -5,8 +5,8 @@
 QUIC                                                             M. Duke
 Internet-Draft                                                    Google
 Intended status: Standards Track                                N. Banks
-Expires: 7 January 2023                                        Microsoft
-                                                             6 July 2022
+Expires: 9 January 2023                                        Microsoft
+                                                             8 July 2022
 
 
                            QUIC Retry Offload
@@ -53,12 +53,12 @@ Status of This Memo
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 1]
+Duke & Banks             Expires 9 January 2023                 [Page 1]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
 
-   This Internet-Draft will expire on 7 January 2023.
+   This Internet-Draft will expire on 9 January 2023.
 
 Copyright Notice
 
@@ -109,7 +109,7 @@ Table of Contents
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 2]
+Duke & Banks             Expires 9 January 2023                 [Page 2]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -165,7 +165,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 3]
+Duke & Banks             Expires 9 January 2023                 [Page 3]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -221,7 +221,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 4]
+Duke & Banks             Expires 9 January 2023                 [Page 4]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -277,7 +277,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 5]
+Duke & Banks             Expires 9 January 2023                 [Page 5]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -333,7 +333,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 6]
+Duke & Banks             Expires 9 January 2023                 [Page 6]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -389,7 +389,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 7]
+Duke & Banks             Expires 9 January 2023                 [Page 7]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -445,7 +445,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 8]
+Duke & Banks             Expires 9 January 2023                 [Page 8]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -501,7 +501,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                 [Page 9]
+Duke & Banks             Expires 9 January 2023                 [Page 9]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -557,7 +557,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 10]
+Duke & Banks             Expires 9 January 2023                [Page 10]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -613,7 +613,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 11]
+Duke & Banks             Expires 9 January 2023                [Page 11]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -669,7 +669,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 12]
+Duke & Banks             Expires 9 January 2023                [Page 12]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -725,7 +725,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 13]
+Duke & Banks             Expires 9 January 2023                [Page 13]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -781,7 +781,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 14]
+Duke & Banks             Expires 9 January 2023                [Page 14]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -837,7 +837,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 15]
+Duke & Banks             Expires 9 January 2023                [Page 15]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -893,7 +893,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 16]
+Duke & Banks             Expires 9 January 2023                [Page 16]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -949,7 +949,7 @@ Appendix A.  Retry Offload YANG Model
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 17]
+Duke & Banks             Expires 9 January 2023                [Page 17]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1005,7 +1005,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 18]
+Duke & Banks             Expires 9 January 2023                [Page 18]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1061,7 +1061,7 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 19]
+Duke & Banks             Expires 9 January 2023                [Page 19]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1117,7 +1117,7 @@ A.1.  Tree Diagram
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 20]
+Duke & Banks             Expires 9 January 2023                [Page 20]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1173,7 +1173,7 @@ Appendix B.  Transition Mode Scenarios
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 21]
+Duke & Banks             Expires 9 January 2023                [Page 21]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1229,7 +1229,7 @@ Appendix C.  Acknowledgments
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 22]
+Duke & Banks             Expires 9 January 2023                [Page 22]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1285,7 +1285,7 @@ D.6.  since draft-ietf-quic-load-balancers-08
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 23]
+Duke & Banks             Expires 9 January 2023                [Page 23]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1341,7 +1341,7 @@ D.10.  since draft-ietf-quic-load-balancers-04
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 24]
+Duke & Banks             Expires 9 January 2023                [Page 24]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1397,7 +1397,7 @@ D.16.  Since draft-duke-quic-load-balancers-05
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 25]
+Duke & Banks             Expires 9 January 2023                [Page 25]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1453,7 +1453,7 @@ Authors' Addresses
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 26]
+Duke & Banks             Expires 9 January 2023                [Page 26]
 
 Internet-Draft             QUIC Retry Offload                  July 2022
 
@@ -1509,4 +1509,4 @@ Internet-Draft             QUIC Retry Offload                  July 2022
 
 
 
-Duke & Banks             Expires 7 January 2023                [Page 27]
+Duke & Banks             Expires 9 January 2023                [Page 27]
