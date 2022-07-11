@@ -143,7 +143,7 @@ Internet-Draft                   QUIC-LB                       July 2022
      E.2.  since draft-ietf-quic-load-balancers-12 . . . . . . . . .  35
      E.3.  since draft-ietf-quic-load-balancers-11 . . . . . . . . .  35
      E.4.  since draft-ietf-quic-load-balancers-10 . . . . . . . . .  35
-     E.5.  since draft-ietf-quic-load-balancers-09 . . . . . . . . .  35
+     E.5.  since draft-ietf-quic-load-balancers-09 . . . . . . . . .  36
      E.6.  since draft-ietf-quic-load-balancers-08 . . . . . . . . .  36
      E.7.  since draft-ietf-quic-load-balancers-07 . . . . . . . . .  36
      E.8.  since draft-ietf-quic-load-balancers-06 . . . . . . . . .  36
@@ -1934,6 +1934,8 @@ E.1.  since draft-ietf-quic-load-balancers-13
 
    *  Describe Distinguishing Attack in Security Considerations.
 
+   *  Added non-normative language about server process demultiplexers
+
 E.2.  since draft-ietf-quic-load-balancers-12
 
    *  Separated Retry Service design into a separate draft
@@ -1951,8 +1953,6 @@ E.4.  since draft-ietf-quic-load-balancers-10
 
    *  Split YANG model into a server and middlebox version
 
-E.5.  since draft-ietf-quic-load-balancers-09
-
 
 
 
@@ -1961,6 +1961,8 @@ Duke, et al.             Expires 12 January 2023               [Page 35]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+E.5.  since draft-ietf-quic-load-balancers-09
 
    *  Renamed "Stream Cipher" and "Block Cipher" to "Encrypted Short"
       and "Encrypted Long"
@@ -2009,14 +2011,14 @@ E.9.  since draft-ietf-quic-load-balancers-05
 
    *  Added YANG model
 
-   *  Updated configuration limits to ensure CID entropy
-
 
 
 Duke, et al.             Expires 12 January 2023               [Page 36]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+   *  Updated configuration limits to ensure CID entropy
 
    *  Switched to notation from quic-transport
 
@@ -2065,14 +2067,14 @@ E.13.  since-draft-ietf-quic-load-balancers-01
 
    *  Light edit of Retry Services section
 
-   *  Discussed load balancer chains
-
 
 
 Duke, et al.             Expires 12 January 2023               [Page 37]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+   *  Discussed load balancer chains
 
 E.14.  since-draft-ietf-quic-load-balancers-00
 
@@ -2120,8 +2122,6 @@ E.19.  Since draft-duke-quic-load-balancers-02
 
    *  Added Block Cipher CID algorithm
 
-   *  Reformatted QUIC-LB packets
-
 
 
 
@@ -2129,6 +2129,8 @@ Duke, et al.             Expires 12 January 2023               [Page 38]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
+
+   *  Reformatted QUIC-LB packets
 
 E.20.  Since draft-duke-quic-load-balancers-01
 
@@ -2159,8 +2161,6 @@ Authors' Addresses
    Christian Huitema
    Private Octopus Inc.
    Email: huitema@huitema.net
-
-
 
 
 
