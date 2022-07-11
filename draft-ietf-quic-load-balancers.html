@@ -833,7 +833,7 @@ address div.right {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Duke, et al.</td>
-<td class="center">Expires 9 January 2023</td>
+<td class="center">Expires 12 January 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -846,12 +846,12 @@ address div.right {
 <dd class="internet-draft">draft-ietf-quic-load-balancers-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-07-08" class="published">8 July 2022</time>
+<time datetime="2022-07-11" class="published">11 July 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-01-09">9 January 2023</time></dd>
+<dd class="expires"><time datetime="2023-01-12">12 January 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -912,7 +912,7 @@ self-encoding their length to aid some hardware offloads.<a href="#section-abstr
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 January 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1026,7 +1026,10 @@ self-encoding their length to aid some hardware offloads.<a href="#section-abstr
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="xref">6.1</a>.  <a href="#name-load-balancer-chains" class="xref">Load balancer chains</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2">
-                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-moving-connections-between-" class="xref">Moving connections between servers</a></p>
+                <p id="section-toc.1-1.6.2.2.1"><a href="#section-6.2" class="xref">6.2</a>.  <a href="#name-server-process-demultiplexi" class="xref">Server Process Demultiplexing</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.3">
+                <p id="section-toc.1-1.6.2.3.1"><a href="#section-6.3" class="xref">6.3</a>.  <a href="#name-moving-connections-between-" class="xref">Moving connections between servers</a></p>
 </li>
             </ul>
 </li>
@@ -1864,19 +1867,54 @@ load balancers would simply treat the least significant bits of the server ID
 as part of the nonce.<a href="#section-6.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="moving-connections-between-servers">
+<div id="server-process-demultiplexing">
 <section id="section-6.2">
-        <h3 id="name-moving-connections-between-">
-<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-moving-connections-between-" class="section-name selfRef">Moving connections between servers</a>
+        <h3 id="name-server-process-demultiplexi">
+<a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-server-process-demultiplexi" class="section-name selfRef">Server Process Demultiplexing</a>
         </h3>
-<p id="section-6.2-1">Some deployments may transparently move a connection from one server to another.
+<p id="section-6.2-1">QUIC servers might have QUIC running on multiple processes listening on the same
+address, and have a need to demultiplex between them. In principle, this
+demultiplexer is a Layer 4 load balancer, and the guidance in <a href="#lb-chains" class="xref">Section 6.1</a>
+applies. However, in many deployments the demultiplexer lacks the capability to
+perform decryption operations. There are some other techniques that might work,
+depending on the capabilities of the server architecture.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.2-2.1">Some bytes of the server ID are reserved to encode the process ID. The
+demultiplexer might operate based on the 4-tuple or other legacy indicator, but
+the receiving server process extracts the server ID, and if it does not match
+the one for that process, the process could "toss" the packet to the correct
+destination process.<a href="#section-6.2-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.2-2.2">Each process could register the connection IDs it generates with the
+demultiplexer, which routes those connection IDs accordingly.<a href="#section-6.2-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-6.2-2.3">Some bytes of the server ID are reserved to encode the process ID. The load
+balancer writes the decrypted connection ID into the packet. The demultiplexer
+reads the process ID from the relevant bytes and routes it accordingly. The
+receiving server process immediately re-encrypts the connection ID in deliver
+the packet to the correct connection and successfully authenticate the packet.
+While this requires coordination between load balancer and server, this document
+does not standardize the technique because it is unsafe to use unless the path
+between load balancer and server is fully secure. An observer at that point can
+determine the server mapping via the IP address of the destination server, but
+the process ID provides additional linkability information.<a href="#section-6.2-2.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+</section>
+</div>
+<div id="moving-connections-between-servers">
+<section id="section-6.3">
+        <h3 id="name-moving-connections-between-">
+<a href="#section-6.3" class="section-number selfRef">6.3. </a><a href="#name-moving-connections-between-" class="section-name selfRef">Moving connections between servers</a>
+        </h3>
+<p id="section-6.3-1">Some deployments may transparently move a connection from one server to another.
 The means of transferring connection state between servers is out of scope of
-this document.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.2-2">To support a handover, a server involved in the transition could issue CIDs that
+this document.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.3-2">To support a handover, a server involved in the transition could issue CIDs that
 map to the new server via a NEW_CONNECTION_ID frame, and retire CIDs associated
-with the new server using the "Retire Prior To" field in that frame.<a href="#section-6.2-2" class="pilcrow">¶</a></p>
-<p id="section-6.2-3">Alternately, if the old server is going offline, the load balancer could simply
-map its server ID to the new server's address.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
+with the new server using the "Retire Prior To" field in that frame.<a href="#section-6.3-2" class="pilcrow">¶</a></p>
+<p id="section-6.3-3">Alternately, if the old server is going offline, the load balancer could simply
+map its server ID to the new server's address.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

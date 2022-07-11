@@ -5,10 +5,10 @@
 QUIC                                                             M. Duke
 Internet-Draft                                                    Google
 Intended status: Standards Track                                N. Banks
-Expires: 9 January 2023                                        Microsoft
+Expires: 12 January 2023                                       Microsoft
                                                               C. Huitema
                                                     Private Octopus Inc.
-                                                             8 July 2022
+                                                            11 July 2022
 
 
             QUIC-LB: Generating Routable QUIC Connection IDs
@@ -53,7 +53,7 @@ Status of This Memo
 
 
 
-Duke, et al.             Expires 9 January 2023                 [Page 1]
+Duke, et al.             Expires 12 January 2023                [Page 1]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -63,7 +63,7 @@ Internet-Draft                   QUIC-LB                       July 2022
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 January 2023.
+   This Internet-Draft will expire on 12 January 2023.
 
 Copyright Notice
 
@@ -105,67 +105,67 @@ Table of Contents
    5.  Per-connection state  . . . . . . . . . . . . . . . . . . . .  16
    6.  Additional Use Cases  . . . . . . . . . . . . . . . . . . . .  17
      6.1.  Load balancer chains  . . . . . . . . . . . . . . . . . .  17
-     6.2.  Moving connections between servers  . . . . . . . . . . .  18
+     6.2.  Server Process Demultiplexing . . . . . . . . . . . . . .  18
 
 
 
-Duke, et al.             Expires 9 January 2023                 [Page 2]
+Duke, et al.             Expires 12 January 2023                [Page 2]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
 
-   7.  Version Invariance of QUIC-LB . . . . . . . . . . . . . . . .  18
-   8.  Security Considerations . . . . . . . . . . . . . . . . . . .  19
+     6.3.  Moving connections between servers  . . . . . . . . . . .  18
+   7.  Version Invariance of QUIC-LB . . . . . . . . . . . . . . . .  19
+   8.  Security Considerations . . . . . . . . . . . . . . . . . . .  20
      8.1.  Attackers not between the load balancer and server  . . .  20
-     8.2.  Attackers between the load balancer and server  . . . . .  20
-     8.3.  Multiple Configuration IDs  . . . . . . . . . . . . . . .  20
-     8.4.  Limited configuration scope . . . . . . . . . . . . . . .  20
-     8.5.  Stateless Reset Oracle  . . . . . . . . . . . . . . . . .  21
+     8.2.  Attackers between the load balancer and server  . . . . .  21
+     8.3.  Multiple Configuration IDs  . . . . . . . . . . . . . . .  21
+     8.4.  Limited configuration scope . . . . . . . . . . . . . . .  21
+     8.5.  Stateless Reset Oracle  . . . . . . . . . . . . . . . . .  22
      8.6.  Connection ID Entropy . . . . . . . . . . . . . . . . . .  22
      8.7.  Distinguishing Attacks  . . . . . . . . . . . . . . . . .  23
-   9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  23
-   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  23
-     10.1.  Normative References . . . . . . . . . . . . . . . . . .  23
-     10.2.  Informative References . . . . . . . . . . . . . . . . .  23
-   Appendix A.  QUIC-LB YANG Model . . . . . . . . . . . . . . . . .  25
+   9.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  24
+   10. References  . . . . . . . . . . . . . . . . . . . . . . . . .  24
+     10.1.  Normative References . . . . . . . . . . . . . . . . . .  24
+     10.2.  Informative References . . . . . . . . . . . . . . . . .  24
+   Appendix A.  QUIC-LB YANG Model . . . . . . . . . . . . . . . . .  26
      A.1.  Tree Diagram  . . . . . . . . . . . . . . . . . . . . . .  31
-   Appendix B.  Load Balancer Test Vectors . . . . . . . . . . . . .  31
-     B.1.  Unencrypted CIDs  . . . . . . . . . . . . . . . . . . . .  31
+   Appendix B.  Load Balancer Test Vectors . . . . . . . . . . . . .  32
+     B.1.  Unencrypted CIDs  . . . . . . . . . . . . . . . . . . . .  32
      B.2.  Encrypted CIDs  . . . . . . . . . . . . . . . . . . . . .  32
-   Appendix C.  Interoperability with DTLS over UDP  . . . . . . . .  32
-     C.1.  DTLS 1.0 and 1.2  . . . . . . . . . . . . . . . . . . . .  32
-     C.2.  DTLS 1.3  . . . . . . . . . . . . . . . . . . . . . . . .  33
-     C.3.  Future Versions of DTLS . . . . . . . . . . . . . . . . .  34
-   Appendix D.  Acknowledgments  . . . . . . . . . . . . . . . . . .  34
-   Appendix E.  Change Log . . . . . . . . . . . . . . . . . . . . .  34
-     E.1.  since draft-ietf-quic-load-balancers-13 . . . . . . . . .  34
-     E.2.  since draft-ietf-quic-load-balancers-12 . . . . . . . . .  34
-     E.3.  since draft-ietf-quic-load-balancers-11 . . . . . . . . .  34
-     E.4.  since draft-ietf-quic-load-balancers-10 . . . . . . . . .  34
+   Appendix C.  Interoperability with DTLS over UDP  . . . . . . . .  33
+     C.1.  DTLS 1.0 and 1.2  . . . . . . . . . . . . . . . . . . . .  33
+     C.2.  DTLS 1.3  . . . . . . . . . . . . . . . . . . . . . . . .  34
+     C.3.  Future Versions of DTLS . . . . . . . . . . . . . . . . .  35
+   Appendix D.  Acknowledgments  . . . . . . . . . . . . . . . . . .  35
+   Appendix E.  Change Log . . . . . . . . . . . . . . . . . . . . .  35
+     E.1.  since draft-ietf-quic-load-balancers-13 . . . . . . . . .  35
+     E.2.  since draft-ietf-quic-load-balancers-12 . . . . . . . . .  35
+     E.3.  since draft-ietf-quic-load-balancers-11 . . . . . . . . .  35
+     E.4.  since draft-ietf-quic-load-balancers-10 . . . . . . . . .  35
      E.5.  since draft-ietf-quic-load-balancers-09 . . . . . . . . .  35
-     E.6.  since draft-ietf-quic-load-balancers-08 . . . . . . . . .  35
-     E.7.  since draft-ietf-quic-load-balancers-07 . . . . . . . . .  35
-     E.8.  since draft-ietf-quic-load-balancers-06 . . . . . . . . .  35
+     E.6.  since draft-ietf-quic-load-balancers-08 . . . . . . . . .  36
+     E.7.  since draft-ietf-quic-load-balancers-07 . . . . . . . . .  36
+     E.8.  since draft-ietf-quic-load-balancers-06 . . . . . . . . .  36
      E.9.  since draft-ietf-quic-load-balancers-05 . . . . . . . . .  36
-     E.10. since draft-ietf-quic-load-balancers-04 . . . . . . . . .  36
-     E.11. since-draft-ietf-quic-load-balancers-03 . . . . . . . . .  36
-     E.12. since-draft-ietf-quic-load-balancers-02 . . . . . . . . .  36
+     E.10. since draft-ietf-quic-load-balancers-04 . . . . . . . . .  37
+     E.11. since-draft-ietf-quic-load-balancers-03 . . . . . . . . .  37
+     E.12. since-draft-ietf-quic-load-balancers-02 . . . . . . . . .  37
      E.13. since-draft-ietf-quic-load-balancers-01 . . . . . . . . .  37
-     E.14. since-draft-ietf-quic-load-balancers-00 . . . . . . . . .  37
-     E.15. Since draft-duke-quic-load-balancers-06 . . . . . . . . .  37
-     E.16. Since draft-duke-quic-load-balancers-05 . . . . . . . . .  37
-     E.17. Since draft-duke-quic-load-balancers-04 . . . . . . . . .  37
-     E.18. Since draft-duke-quic-load-balancers-03 . . . . . . . . .  37
-     E.19. Since draft-duke-quic-load-balancers-02 . . . . . . . . .  37
-     E.20. Since draft-duke-quic-load-balancers-01 . . . . . . . . .  38
-     E.21. Since draft-duke-quic-load-balancers-00 . . . . . . . . .  38
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  38
+     E.14. since-draft-ietf-quic-load-balancers-00 . . . . . . . . .  38
+     E.15. Since draft-duke-quic-load-balancers-06 . . . . . . . . .  38
+     E.16. Since draft-duke-quic-load-balancers-05 . . . . . . . . .  38
+     E.17. Since draft-duke-quic-load-balancers-04 . . . . . . . . .  38
+     E.18. Since draft-duke-quic-load-balancers-03 . . . . . . . . .  38
+     E.19. Since draft-duke-quic-load-balancers-02 . . . . . . . . .  38
+     E.20. Since draft-duke-quic-load-balancers-01 . . . . . . . . .  39
+     E.21. Since draft-duke-quic-load-balancers-00 . . . . . . . . .  39
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  39
 
 
 
 
-
-Duke, et al.             Expires 9 January 2023                 [Page 3]
+Duke, et al.             Expires 12 January 2023                [Page 3]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -221,7 +221,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                 [Page 4]
+Duke, et al.             Expires 12 January 2023                [Page 4]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -277,7 +277,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                 [Page 5]
+Duke, et al.             Expires 12 January 2023                [Page 5]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -333,7 +333,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                 [Page 6]
+Duke, et al.             Expires 12 January 2023                [Page 6]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -389,7 +389,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                 [Page 7]
+Duke, et al.             Expires 12 January 2023                [Page 7]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -445,7 +445,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                 [Page 8]
+Duke, et al.             Expires 12 January 2023                [Page 8]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -501,7 +501,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                 [Page 9]
+Duke, et al.             Expires 12 January 2023                [Page 9]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -557,7 +557,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 10]
+Duke, et al.             Expires 12 January 2023               [Page 10]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -613,7 +613,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 11]
+Duke, et al.             Expires 12 January 2023               [Page 11]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -669,7 +669,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 12]
+Duke, et al.             Expires 12 January 2023               [Page 12]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -725,7 +725,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 13]
+Duke, et al.             Expires 12 January 2023               [Page 13]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -781,7 +781,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 14]
+Duke, et al.             Expires 12 January 2023               [Page 14]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -837,7 +837,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 15]
+Duke, et al.             Expires 12 January 2023               [Page 15]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -893,7 +893,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 16]
+Duke, et al.             Expires 12 January 2023               [Page 16]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -949,7 +949,7 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 17]
+Duke, et al.             Expires 12 January 2023               [Page 17]
 
 Internet-Draft                   QUIC-LB                       July 2022
 
@@ -960,11 +960,55 @@ Internet-Draft                   QUIC-LB                       July 2022
    the last tier.  The forward load balancers would simply treat the
    least significant bits of the server ID as part of the nonce.
 
-6.2.  Moving connections between servers
+6.2.  Server Process Demultiplexing
+
+   QUIC servers might have QUIC running on multiple processes listening
+   on the same address, and have a need to demultiplex between them.  In
+   principle, this demultiplexer is a Layer 4 load balancer, and the
+   guidance in Section 6.1 applies.  However, in many deployments the
+   demultiplexer lacks the capability to perform decryption operations.
+   There are some other techniques that might work, depending on the
+   capabilities of the server architecture.
+
+   *  Some bytes of the server ID are reserved to encode the process ID.
+      The demultiplexer might operate based on the 4-tuple or other
+      legacy indicator, but the receiving server process extracts the
+      server ID, and if it does not match the one for that process, the
+      process could "toss" the packet to the correct destination
+      process.
+
+   *  Each process could register the connection IDs it generates with
+      the demultiplexer, which routes those connection IDs accordingly.
+
+   *  Some bytes of the server ID are reserved to encode the process ID.
+      The load balancer writes the decrypted connection ID into the
+      packet.  The demultiplexer reads the process ID from the relevant
+      bytes and routes it accordingly.  The receiving server process
+      immediately re-encrypts the connection ID in deliver the packet to
+      the correct connection and successfully authenticate the packet.
+      While this requires coordination between load balancer and server,
+      this document does not standardize the technique because it is
+      unsafe to use unless the path between load balancer and server is
+      fully secure.  An observer at that point can determine the server
+      mapping via the IP address of the destination server, but the
+      process ID provides additional linkability information.
+
+6.3.  Moving connections between servers
 
    Some deployments may transparently move a connection from one server
    to another.  The means of transferring connection state between
    servers is out of scope of this document.
+
+
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 18]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    To support a handover, a server involved in the transition could
    issue CIDs that map to the new server via a NEW_CONNECTION_ID frame,
@@ -1000,16 +1044,6 @@ Internet-Draft                   QUIC-LB                       July 2022
       (IP address, UDP port, client-generated destination Connection ID)
       remain constant for all packets sent on the same connection.
 
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 18]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    While this document does not update the commitments in [RFC8999], the
    additional assumptions are minimal and narrowly scoped, and provide a
    likely set of constants that load balancers can use with minimal risk
@@ -1024,6 +1058,14 @@ Internet-Draft                   QUIC-LB                       July 2022
    decision.  Note that the format and cryptographic protection of this
    information may change in future versions or extensions of TLS or
    QUIC, and therefore this functionality is inherently not version-
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 19]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    invariant.  See also Section 3.1 for other considerations about this
    case.  Note that an SNI-aware load balancer, faced with an unknown
    QUIC version, might misdirect initial packets to the wrong tenant.
@@ -1054,18 +1096,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    patterns, and therefore efforts to frustrate any analysis of server
    ID encoding have diminishing returns.
 
-
-
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 19]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
 8.1.  Attackers not between the load balancer and server
 
    Any attacker might open a connection to the server infrastructure and
@@ -1079,6 +1109,18 @@ Internet-Draft                   QUIC-LB                       July 2022
    Were this analysis to obtain the server encoding, then on-path
    observers might apply this analysis to correlating different client
    IP addresses.
+
+
+
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 20]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
 8.2.  Attackers between the load balancer and server
 
@@ -1114,14 +1156,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    complimentary with concealing DNS requests (e.g., DoH [RFC8484]) and
    the TLS Server Name Indicator (SNI) ([I-D.ietf-tls-esni]) to obscure
    the ultimate destination of traffic.  While the load balancer's
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 20]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    fallback algorithm (Section 3.2) can use the SNI to make a routing
    decision on the first packet, there are three ways to route
    subsequent packets:
@@ -1136,6 +1170,13 @@ Internet-Draft                   QUIC-LB                       July 2022
    *  tenants can use the 0b11 codepoint in their CIDs (in which case
       they SHOULD disable migration in their connections), which
       neutralizes the value of QUIC-LB but preserves privacy.
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 21]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    When configuring QUIC-LB, administrators must evaluate the privacy
    tradeoff considering the relative value of each of these properties,
@@ -1168,16 +1209,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    able to generate correct tokens for connections using either type of
    CID.
 
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 21]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
 8.6.  Connection ID Entropy
 
    If a server ever reuses a nonce in generating a CID for a given
@@ -1193,6 +1224,15 @@ Internet-Draft                   QUIC-LB                       July 2022
    at least four octets of the CID are reserved for a nonce that, if
    used only once, will result in unique cipher text for each Connection
    ID.
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 22]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    If servers simply increment the nonce by one with each generated
    connection ID, then it is safe to use the existing keys until any
@@ -1222,18 +1262,6 @@ Internet-Draft                   QUIC-LB                       July 2022
    therefore compare the expected rate at which servers will generate
    CIDs with the lifetime of a configuration.
 
-
-
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 22]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
 8.7.  Distinguishing Attacks
 
    The Four Pass Encryption algorithm is structured as a 4-round Feistel
@@ -1254,6 +1282,14 @@ Internet-Draft                   QUIC-LB                       July 2022
    generates the ID and by the load balancer that decrypts the content
    of the CID.  Attackers would have to compensate by guesses about the
    allocation of server identifiers or the generation of nonces.  The
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 23]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
    these attacks are thus mitigated by making nonces hard to guess, as
    specified in Section 8.6, and by rules related to mixed deployments
    that use both clear text CID and encrypted CID, for example when
@@ -1283,13 +1319,6 @@ Internet-Draft                   QUIC-LB                       July 2022
 
 10.2.  Informative References
 
-
-
-Duke, et al.             Expires 9 January 2023                [Page 23]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    [I-D.draft-ietf-tls-dtls13]
               Rescorla, E., Tschofenig, H., and N. Modadugu, "The
               Datagram Transport Layer Security (DTLS) Protocol Version
@@ -1304,6 +1333,18 @@ Internet-Draft                   QUIC-LB                       July 2022
               Internet-Draft, draft-ietf-tls-dtls-connection-id-13, 22
               June 2021, <https://www.ietf.org/archive/id/draft-ietf-
               tls-dtls-connection-id-13.txt>.
+
+
+
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 24]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    [I-D.ietf-tls-esni]
               Rescorla, E., Oku, K., Sullivan, N., and C. A. Wood, "TLS
@@ -1335,17 +1376,6 @@ Internet-Draft                   QUIC-LB                       July 2022
               Security Version 1.2", RFC 6347, DOI 10.17487/RFC6347,
               January 2012, <https://www.rfc-editor.org/info/rfc6347>.
 
-
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 24]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    [RFC7696]  Housley, R., "Guidelines for Cryptographic Algorithm
               Agility and Selecting Mandatory-to-Implement Algorithms",
               BCP 201, RFC 7696, DOI 10.17487/RFC7696, November 2015,
@@ -1364,6 +1394,13 @@ Internet-Draft                   QUIC-LB                       July 2022
    [RFC8484]  Hoffman, P. and P. McManus, "DNS Queries over HTTPS
               (DoH)", RFC 8484, DOI 10.17487/RFC8484, October 2018,
               <https://www.rfc-editor.org/info/rfc8484>.
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 25]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
 Appendix A.  QUIC-LB YANG Model
 
@@ -1395,13 +1432,6 @@ Appendix A.  QUIC-LB YANG Model
        "WG Web:   <http://datatracker.ietf.org/wg/quic>
         WG List:  <quic@ietf.org>
 
-
-
-Duke, et al.             Expires 9 January 2023                [Page 25]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
         Authors: Martin Duke (martin.h.duke at gmail dot com)
                  Nick Banks (nibanks at microsoft dot com)
                  Christian Huitema (huitema at huitema.net)";
@@ -1420,6 +1450,13 @@ Internet-Draft                   QUIC-LB                       July 2022
         forth in Section 4.c of the IETF Trust's Legal Provisions
         Relating to IETF Documents
         (https://trustee.ietf.org/license-info).
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 26]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
         This version of this YANG module is part of RFC XXXX
         (https://www.rfc-editor.org/info/rfcXXXX); see the RFC itself
@@ -1450,14 +1487,6 @@ Internet-Draft                   QUIC-LB                       July 2022
          }
          description
            "This is a 16-byte key, represented with 47 bytes";
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 26]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
        }
 
        leaf config-id {
@@ -1476,6 +1505,14 @@ Internet-Draft                   QUIC-LB                       July 2022
            "If true, the six least significant bits of the first
             CID octet encode the CID length minus one.";
        }
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 27]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
        leaf server-id-length {
          type uint8 {
@@ -1506,14 +1543,6 @@ Internet-Draft                   QUIC-LB                       July 2022
          type quic-lb-key;
          description
            "Key for encrypting the connection ID.";
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 27]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
        }
 
        leaf server-id {
@@ -1533,6 +1562,14 @@ Internet-Draft                   QUIC-LB                       July 2022
 
      import ietf-yang-types {
        prefix yang;
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 28]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
        reference
          "RFC 6991: Common YANG Data Types.";
      }
@@ -1562,14 +1599,6 @@ Internet-Draft                   QUIC-LB                       July 2022
         Copyright (c) 2021 IETF Trust and the persons identified as
         authors of the code.  All rights reserved.
 
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 28]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
         Redistribution and use in source and binary forms, with or
         without modification, is permitted pursuant to, and subject to
         the license terms contained in, the Simplified BSD License set
@@ -1589,6 +1618,14 @@ Internet-Draft                   QUIC-LB                       July 2022
 
      revision "2021-02-11" {
        description
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 29]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
+
          "Updated to design in version 13 of the draft";
        reference
          "RFC XXXX, QUIC-LB: Generating Routable QUIC Connection IDs";
@@ -1618,14 +1655,6 @@ Internet-Draft                   QUIC-LB                       July 2022
              range "0..2";
            }
            mandatory true;
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 29]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
            description
              "Identifier for this CID configuration.";
          }
@@ -1644,6 +1673,14 @@ Internet-Draft                   QUIC-LB                       July 2022
              "Length (in octets) of a server ID. Further range-limited
               by nonce-length.";
          }
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 30]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
          leaf cid-key {
            type quic-lb-key;
@@ -1674,14 +1711,6 @@ Internet-Draft                   QUIC-LB                       July 2022
 
            }
 
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 30]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
            leaf server-address {
              type inet:ip-address;
              mandatory true;
@@ -1696,6 +1725,18 @@ Internet-Draft                   QUIC-LB                       July 2022
 A.1.  Tree Diagram
 
    This summary of the YANG models uses the notation in [RFC8340].
+
+
+
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 31]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    module: ietf-quic-lb-server
      +--rw quic-lb!
@@ -1730,14 +1771,6 @@ Appendix B.  Load Balancer Test Vectors
 
 B.1.  Unencrypted CIDs
 
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 31]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    cr_bits sid nonce cid
    0 c4605e 4504cc4f 07c4605e4504cc4f
    1 350d28b420 3487d970b 40a350d28b4203487d970b
@@ -1749,6 +1782,17 @@ B.2.  Encrypted CIDs
    example that uses the 16-octet single-pass special case, as well as
    an instance where the server ID length exceeds the nonce length,
    requiring a fourth decryption pass.
+
+
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 32]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    cr_bits sid nonce cid
    0 ed793a ee080dbf 0727edaa37e7fac8
@@ -1785,15 +1829,6 @@ C.1.  DTLS 1.0 and 1.2
    type less than 128 as a short header packet, meaning that the
    subsequent octets should contain a connection ID.
 
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 32]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    Existing TLS content types comfortably fit in the range below 128.
    Assignment of codepoints greater than 64 would require coordination
    in accordance with [RFC7983], and anyway would likely create problems
@@ -1803,6 +1838,17 @@ Internet-Draft                   QUIC-LB                       July 2022
    cause a QUIC-LB load balancer to interpret the packet as a QUIC long
    header with an essentially random connection ID, which is likely to
    be routed irregularly.
+
+
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 33]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    The second octet of every DTLS 1.0 or 1.2 datagram is the bitwise
    complement of the DTLS Major version (i.e. version 1.x = 0xfe).  A
@@ -1842,20 +1888,23 @@ C.2.  DTLS 1.3
    advertise support for connection IDs, or the server does not request
    the use of a compliant connection ID.
 
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 33]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    A QUIC-LB load balancer might be modified to identify DTLS 1.3
    packets and correctly parse the fields to identify when there is no
    connection ID and revert to 4-tuple routing, removing the server
    requirement above.  However, such a modification is outside the scope
    of this document, and classifying some packets as DTLS might be
    incompatible with future versions of QUIC.
+
+
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 34]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
 C.3.  Future Versions of DTLS
 
@@ -1898,19 +1947,20 @@ E.4.  since draft-ietf-quic-load-balancers-10
    *  Refactored algorithm descriptions; made the 4-pass algorithm
       easier to implement
 
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 34]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    *  Revised test vectors
 
    *  Split YANG model into a server and middlebox version
 
 E.5.  since draft-ietf-quic-load-balancers-09
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 35]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    *  Renamed "Stream Cipher" and "Block Cipher" to "Encrypted Short"
       and "Encrypted Long"
@@ -1951,17 +2001,6 @@ E.8.  since draft-ietf-quic-load-balancers-06
 
    *  Added retry service considerations for non-Initial packets
 
-
-
-
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 35]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
 E.9.  since draft-ietf-quic-load-balancers-05
 
    *  Added low-config CID for further discussion
@@ -1971,6 +2010,13 @@ E.9.  since draft-ietf-quic-load-balancers-05
    *  Added YANG model
 
    *  Updated configuration limits to ensure CID entropy
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 36]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
    *  Switched to notation from quic-transport
 
@@ -2011,13 +2057,6 @@ E.12.  since-draft-ietf-quic-load-balancers-02
 
    *  Allow dropped long-header packets for known QUIC versions
 
-
-
-Duke, et al.             Expires 9 January 2023                [Page 36]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
 E.13.  since-draft-ietf-quic-load-balancers-01
 
    *  Test vectors for load balancer decoding
@@ -2027,6 +2066,13 @@ E.13.  since-draft-ietf-quic-load-balancers-01
    *  Light edit of Retry Services section
 
    *  Discussed load balancer chains
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 37]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
 E.14.  since-draft-ietf-quic-load-balancers-00
 
@@ -2066,14 +2112,6 @@ E.18.  Since draft-duke-quic-load-balancers-03
 
 E.19.  Since draft-duke-quic-load-balancers-02
 
-
-
-
-Duke, et al.             Expires 9 January 2023                [Page 37]
-
-Internet-Draft                   QUIC-LB                       July 2022
-
-
    *  Added Config Rotation
 
    *  Added failover mode
@@ -2083,6 +2121,14 @@ Internet-Draft                   QUIC-LB                       July 2022
    *  Added Block Cipher CID algorithm
 
    *  Reformatted QUIC-LB packets
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 38]
+
+Internet-Draft                   QUIC-LB                       July 2022
+
 
 E.20.  Since draft-duke-quic-load-balancers-01
 
@@ -2125,4 +2171,14 @@ Authors' Addresses
 
 
 
-Duke, et al.             Expires 9 January 2023                [Page 38]
+
+
+
+
+
+
+
+
+
+
+Duke, et al.             Expires 12 January 2023               [Page 39]
