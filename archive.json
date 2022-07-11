@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-08T16:03:32.242917+00:00",
+  "timestamp": "2022-07-11T15:32:57.372969+00:00",
   "repo": "quicwg/load-balancers",
   "labels": [
     {
@@ -1494,19 +1494,17 @@
       "id": "MDU6SXNzdWU3ODM3MjMxNjY=",
       "title": "Server ID: bits instead of octets?",
       "url": "https://github.com/quicwg/load-balancers/issues/80",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "martinduke"
       ],
-      "labels": [
-        "needs-discussion"
-      ],
+      "labels": [],
       "body": "@ianswett asks if there is added value in expressing server ID lengths in bits instead octets.\r\n\r\nThis is a bit of implementation complexity and a lot of churn in the spec and the handful of implementations that exist, but it does give the configuration agent a little more granularity.\r\n\r\nDoes anyone find the value of this granularity to be compelling?",
       "createdAt": "2021-01-11T21:36:45Z",
-      "updatedAt": "2021-01-12T21:15:56Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T21:03:12Z",
+      "closedAt": "2022-07-08T21:03:12Z",
       "comments": [
         {
           "author": "ianswett",
@@ -1514,6 +1512,13 @@
           "body": "My thinking is that increasing/decreasing the server ID space by 256 is quite a large jump and could make config rotation a bit more complex.\r\n\r\nAdding an extra bit to the server ID doubles the number of IDs, which is a fairly widely used increase in data structures and algorithms.",
           "createdAt": "2021-01-11T22:04:25Z",
           "updatedAt": "2021-01-11T22:04:25Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "While having such fine control would optimize for efficiency, splitting up bytes like this would complicate implementation. I'm also doubt that 1B of overhead is really going to affect anything.\r\n\r\nClosing this issue due to old age; can reopen if anyone wants to fight it out.",
+          "createdAt": "2022-07-08T21:03:12Z",
+          "updatedAt": "2022-07-08T21:03:12Z"
         }
       ]
     },
@@ -2960,16 +2965,24 @@
       "id": "I_kwDODoD6yc5D0alV",
       "title": "Define minimum interoperability",
       "url": "https://github.com/quicwg/load-balancers/issues/162",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "We should specify what subset of possible configurations must be necessary to be compliant. Lots of concerns here to think through and iron out:\r\n\r\nEncryption might be a tough one: given the constraints that lead to the decision whether or not to encrypt, it is easy to imagine encryption-only or plaintext-only devices.\r\n\r\nAs for nonce and SID lengths, a reasonable nominee would be [sid_len = 3; nonce_len = 4].\r\n\r\nIn particular, having nonce_len > 16 bytes is both excessive and inconvenient in terms of expressing the nonce as a 128 bit integer. It is likely that Google quiche will not support nonces that long, for instance.\r\n\r\nRelatedly, a load balancer very concerned about decrypt costs might force single-pass decryption by requiring sid_len + nonce_len = 16 bytes.",
       "createdAt": "2022-02-14T20:35:54Z",
-      "updatedAt": "2022-02-14T20:35:54Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2022-07-11T15:29:04Z",
+      "closedAt": "2022-07-11T15:29:04Z",
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "After reflection, I don't think there's anything useful to say here",
+          "createdAt": "2022-07-11T15:29:04Z",
+          "updatedAt": "2022-07-11T15:29:04Z"
+        }
+      ]
     },
     {
       "number": 164,
@@ -3096,7 +3109,7 @@
       "id": "I_kwDODoD6yc5HJn8W",
       "title": "Add crypto review discussion to security considerations",
       "url": "https://github.com/quicwg/load-balancers/issues/168",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -3105,8 +3118,8 @@
       "labels": [],
       "body": "The analysis in the second crypto review should be in the security considerations.",
       "createdAt": "2022-04-05T20:52:18Z",
-      "updatedAt": "2022-04-07T19:56:48Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T16:03:44Z",
+      "closedAt": "2022-07-08T16:03:44Z",
       "comments": [
         {
           "author": "martinduke",
@@ -3114,6 +3127,13 @@
           "body": "I believe there is an edge case where a partially chosen plaintext is possible.\r\n\r\n1) The load balancer is supporting both an encrypted and unencrypted config, on different codepoints, that happen to use the same server ID mapping\r\n2) The server is generating encrypted CIDs.\r\n3) The attacker sends an initial packet sends an unencrypted CID.\r\n4) Any server generated CID is therefore using the unencrypted server ID as plaintext. The random nonce should generally protect us, but maybe not?\r\n\r\nAnyway, security considerations could say something like \"unencrypted and encrypted CIDs MUST NOT use the same server ID assignments because...\".",
           "createdAt": "2022-04-07T19:56:48Z",
           "updatedAt": "2022-04-07T19:56:48Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Fixed by #176",
+          "createdAt": "2022-07-08T16:03:44Z",
+          "updatedAt": "2022-07-08T16:03:44Z"
         }
       ]
     },
@@ -3122,7 +3142,7 @@
       "id": "I_kwDODoD6yc5HJoIS",
       "title": "Make #of passes a parameter",
       "url": "https://github.com/quicwg/load-balancers/issues/169",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -3131,24 +3151,32 @@
       "labels": [],
       "body": "We're awaiting more data to fully understand this, but we may need to allow 4, 6, or 12 passes as configuration options.",
       "createdAt": "2022-04-05T20:53:11Z",
-      "updatedAt": "2022-04-05T20:53:19Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2022-07-08T16:04:26Z",
+      "closedAt": "2022-07-08T16:04:25Z",
+      "comments": [
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Fixed by #175, but we're instead going to go with #176 in lieu of doing this.",
+          "createdAt": "2022-07-08T16:04:25Z",
+          "updatedAt": "2022-07-08T16:04:25Z"
+        }
+      ]
     },
     {
       "number": 171,
       "id": "I_kwDODoD6yc5IbVM-",
       "title": "Rename 4-tuple routing?",
       "url": "https://github.com/quicwg/load-balancers/issues/171",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "The '11' codepoint might be better defined. It would be good, for instance, if a stateful load balancer actually stored the observed CID so that the connection can survive a NAT rebinding.",
       "createdAt": "2022-04-25T22:45:20Z",
-      "updatedAt": "2022-07-06T23:09:02Z",
-      "closedAt": null,
+      "updatedAt": "2022-07-08T18:48:50Z",
+      "closedAt": "2022-07-08T18:48:50Z",
       "comments": [
         {
           "author": "martinduke",
@@ -3165,6 +3193,22 @@
           "updatedAt": "2022-07-06T23:09:02Z"
         }
       ]
+    },
+    {
+      "number": 177,
+      "id": "I_kwDODoD6yc5Nc57f",
+      "title": "Switching between Server processes",
+      "url": "https://github.com/quicwg/load-balancers/issues/177",
+      "state": "CLOSED",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Many server architectures have multiple processes. There are many ways to properly route packets between them, but many have severely limited capabilities.\r\n\r\nAdd some non-normative text about options here: run QUIC-LB at the demultiplexer, packet toss, register connection IDs at the demultiplexer, or rewrite the CID with the decrypted one at the LB (which has security limitations)",
+      "createdAt": "2022-07-08T20:33:56Z",
+      "updatedAt": "2022-07-11T15:32:27Z",
+      "closedAt": "2022-07-11T15:32:27Z",
+      "comments": []
     }
   ],
   "pulls": [
@@ -9181,26 +9225,42 @@
       "id": "PR_kwDODoD6yc46-qGs",
       "title": "Further 0b11 discussion",
       "url": "https://github.com/quicwg/load-balancers/pull/174",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "martinduke",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes #171.",
       "createdAt": "2022-07-06T23:59:06Z",
-      "updatedAt": "2022-07-07T17:00:50Z",
+      "updatedAt": "2022-07-08T18:48:51Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "main",
-      "baseRefOid": "6c3767308940722dd8e0a2da06dce30810d0a91d",
+      "baseRefOid": "8569234f87c482c8a081e28a0ff184d83c02e700",
       "headRepository": "quicwg/load-balancers",
       "headRefName": "cp11",
-      "headRefOid": "4e476580634c28435bddd33d44b4bf7814a38e38",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "f5d852cb8dade0d22124e42047d6078e54378ed1",
+      "closedAt": "2022-07-08T18:48:50Z",
+      "mergedAt": "2022-07-08T18:48:50Z",
+      "mergedBy": "martinduke",
+      "mergeCommit": {
+        "oid": "bca1b43912f4e4154fcc078f6d786881e1638573"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDODoD6yc49lgXX",
+          "commit": {
+            "abbreviatedOid": "4e47658"
+          },
+          "author": "nibanks",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-07-08T18:12:13Z",
+          "updatedAt": "2022-07-08T18:12:13Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 175,
@@ -9214,13 +9274,13 @@
       "labels": [],
       "body": "Not really sure that we have to do that, but I did it anyhow. \r\nAlso fixed a couple of random line length issues that were causing errors in xml2rfc",
       "createdAt": "2022-07-07T06:01:41Z",
-      "updatedAt": "2022-07-07T19:42:58Z",
+      "updatedAt": "2022-07-08T17:35:08Z",
       "baseRepository": "quicwg/load-balancers",
       "baseRefName": "main",
-      "baseRefOid": "6c3767308940722dd8e0a2da06dce30810d0a91d",
+      "baseRefOid": "8569234f87c482c8a081e28a0ff184d83c02e700",
       "headRepository": "getdnsapi/load-balancers",
       "headRefName": "12passes",
-      "headRefOid": "3a3dd80ae74da8e090381aee5d5827e7f08caf3a",
+      "headRefOid": "27845bd6d306ad974704f7d5e77c5af239b6d796",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -9232,6 +9292,20 @@
           "body": "Thanks for doing this. One comment:\r\n\r\nI don't think the Security Considerations section here fully captures our doubts about the need for this. IIRC, the 4-pass is only vulnerable to known-plaintext attacks, which seem hard to mount here. And as you state, if the consequence is the attacker discovering that the CID is not random, it's not obvious to me that it's a serious problem.",
           "createdAt": "2022-07-07T19:42:58Z",
           "updatedAt": "2022-07-07T19:42:58Z"
+        },
+        {
+          "author": "martinduke",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Per offline discussion with @huitema: we are disinclined to include this in the draft, because we don't think people will implement it. We will keep it around in case reviews demand it, but have no plans to merge.",
+          "createdAt": "2022-07-08T17:29:59Z",
+          "updatedAt": "2022-07-08T17:29:59Z"
+        },
+        {
+          "author": "huitema",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@martinduke the latest commit have resolved potential merge conflicts between this PR and the main branch, making it easier to \"pull the PR off our back pocket\" if we really have to.",
+          "createdAt": "2022-07-08T17:35:08Z",
+          "updatedAt": "2022-07-08T17:35:08Z"
         }
       ],
       "reviews": []
@@ -9277,6 +9351,34 @@
           "updatedAt": "2022-07-08T16:03:05Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 178,
+      "id": "PR_kwDODoD6yc47IY7W",
+      "title": "Process Demultiplexing",
+      "url": "https://github.com/quicwg/load-balancers/pull/178",
+      "state": "MERGED",
+      "author": "martinduke",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #177 ",
+      "createdAt": "2022-07-08T21:36:03Z",
+      "updatedAt": "2022-07-11T15:32:28Z",
+      "baseRepository": "quicwg/load-balancers",
+      "baseRefName": "main",
+      "baseRefOid": "bca1b43912f4e4154fcc078f6d786881e1638573",
+      "headRepository": "quicwg/load-balancers",
+      "headRefName": "process",
+      "headRefOid": "3df68dad56eb9484dfb0dc94d0fd92590de8bc60",
+      "closedAt": "2022-07-11T15:32:27Z",
+      "mergedAt": "2022-07-11T15:32:27Z",
+      "mergedBy": "martinduke",
+      "mergeCommit": {
+        "oid": "654856b672746b9dbcb4fddd60137020b022d0c9"
+      },
+      "comments": [],
       "reviews": []
     }
   ]
