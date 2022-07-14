@@ -239,9 +239,11 @@ First Octet {
 
 The first octet has the following fields:
 
-Config Rotation: Indicates the configuration used to interpret the CID.
+Config Rotation:
+: Indicates the configuration used to interpret the CID.
 
-CID Len or Random Bits: Length Self-Description (if applicable), or random bits
+CID Len or Random Bits:
+: Length Self-Description (if applicable), or random bits
 otherwise. Encodes the length of the Connection ID following the First Octet.
 
 # Load Balancing Preliminaries {#load-balancing}
